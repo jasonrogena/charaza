@@ -178,6 +178,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+    	nameTextBox.requestFocus();
 		return true;
 	}
     
