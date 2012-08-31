@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="activityTitleColor">#2d2d2d</color>
+    <color name="activityTitleTextColor">#FFFFFF</color>
+    <color name="normalTextColor">#2d2d2d</color>
+    <color name="normalTextSelectedColor">#FFFFFF</color>
+    <color name="tableSeparatorSelectedColor">#FFFFFF</color>
+    <color name="tableRowSelectedColor">#aeebff</color>
+    <color name="tableRowColor">#FFFFFF</color>
+    <color name="activityTitleSeperatorColor">#000000</color>
+    <color name="scrollerColor">#2d2d2d</color>
+    <color name="layoutColor">#FFFFFF</color>
+    <color name="profileActivityLayoutColor">#fff2f2</color>
+    <color name="tableSeparatorColor">#2d2d2d</color>
+    <color name="normalTextColorHighlight">#FFFFFF</color>
+    <color name="incidentTimeTextColor">#0099cc</color>
+    <color name="profileIncidentBackgroundColor">#FFFFFF</color>
+</resources>

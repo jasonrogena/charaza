@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name='tableCellSeparatorWidth'>1dp</dimen>
+    <dimen name="tableTextSize">10dp</dimen>
+    <dimen name="tableRowHeight">20dp</dimen>
+    <dimen name="tableTextSideMargin">4dp</dimen>
+    <dimen name="activityTitleHeight">50dp</dimen>
+    <dimen name="activityTitleTextSize">23dp</dimen>
+    <dimen name="profileNameTextSize">17dp</dimen>
+    <dimen name="profileCharazwadTextSize">17dp</dimen>
+    <dimen name="normalTextSize">16dp</dimen>
+    <dimen name="fromTitleVMargin">18dp</dimen>
+    <dimen name="fromRelatedViewVMargin">10dp</dimen>
+    <dimen name="fromUnrelatedViewVMargin">15dp</dimen>
+    <dimen name="splashScreenTextTopMargin">25dp</dimen>
+    <dimen name="splashScreenTextSize">26dp</dimen>
+    <dimen name="sideMargin">8dp</dimen>
+    <dimen name="profileIncidentSideMargin">16dp</dimen>
+    <dimen name="textBoxHeight">45dp</dimen>
+    <dimen name="titleTextLeftMargin">10dp</dimen>
+    <dimen name="profileImageWidth">90dp</dimen>
+    <dimen name="profileImageHeight">90dp</dimen>
+    <dimen name="profilePostTextSize">12dp</dimen>
+    <dimen name="profileIncidentTextSize">9dp</dimen>
+    <dimen name="profileIncidentTimeTextSize">8dp</dimen>
+</resources>

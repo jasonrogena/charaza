@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/splashScreenRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/layoutColor">
+    <ImageView 
+        android:id="@+id/splashScreenImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pig_face"
+        android:contentDescription="@string/splashScreenContentDescription"
+        android:layout_centerInParent="true"/>
+    <TextView 
+        android:id="@+id/splashScreenText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_below="@id/splashScreenImage"
+        android:layout_marginTop="@dimen/splashScreenTextTopMargin"
+        android:textSize="@dimen/activityTitleTextSize"
+        android:textColor="@color/normalTextColor"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"/>
+    
+</RelativeLayout>
