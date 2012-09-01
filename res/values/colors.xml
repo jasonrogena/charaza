@@ -5,7 +5,9 @@
     <color name="normalTextColor">#2d2d2d</color>
     <color name="normalTextSelectedColor">#FFFFFF</color>
     <color name="tableSeparatorSelectedColor">#FFFFFF</color>
-    <color name="tableRowSelectedColor">#aeebff</color>
+    <color name="tableRowSelectedColor">#c3e9fb</color>
+    <color name="extraInfoButtonFocusedColor">#c3e9fb</color>
+    <color name="extraInfoOutOfFocusColor">#ffffff</color>
     <color name="tableRowColor">#FFFFFF</color>
     <color name="activityTitleSeperatorColor">#000000</color>
     <color name="scrollerColor">#2d2d2d</color>

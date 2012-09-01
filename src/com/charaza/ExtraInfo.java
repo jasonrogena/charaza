@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 //import android.widget.Toast;
+import android.widget.Toast;
 
 public class ExtraInfo extends SherlockActivity implements View.OnClickListener, OnItemClickListener, ISideNavigationCallback
 {
@@ -62,6 +63,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private Profile profile;
 	private RelativeLayout extraInfoRelativeLayout;
 	private ScrollView extraInfoScrollView;
+	private Context context;
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -123,6 +125,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		profile=bundle.getParcelable(profile.PARCELABLE_KEY);
 		profile.setContext(this);
+		context=this;
 		
 		charazaData=new CharazaData(this);
 		addedAliases=new ArrayList<Button>();
@@ -327,7 +330,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	
 	private void showListPopup()
 	{
-		aliasTypeDialog.setTitle("Alias Types");
+		aliasTypeDialog.setTitle("Things you might know");
 		aliasTypeListView=(ListView)aliasTypeDialog.findViewById(R.id.aliasTypeListView);
 		aliasTypeListView.setAdapter(extraArrayAdapter);
 		aliasTypeListView.setOnItemClickListener(this);
@@ -389,6 +392,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		protected void onPostExecute(String[] result) 
 		{
 			setArrayAdapter(result);
+			if(aliasTypeDialog.isShowing())
+			{
+				aliasTypeDialog.dismiss();
+				Toast.makeText(context, "Try pressing + again", Toast.LENGTH_LONG).show();
+			}
 			super.onPostExecute(result);
 		}
 		

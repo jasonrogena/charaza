@@ -76,7 +76,9 @@
 	        android:layout_below="@id/nameLabel"
 	        android:layout_alignParentRight="true"
 	        android:layout_marginRight="@dimen/sideMargin"
-	        android:nextFocusDown="@id/post" /><!-- width should match that of the text box -->
+	        android:nextFocusDown="@id/post"
+	        android:src="@drawable/plus"
+	        android:background="@color/extraInfoOutOfFocusColor" /><!-- width should match that of the text box -->
 	    <TextView
 	        android:id="@+id/postLabel"
 	        android:layout_width="fill_parent"

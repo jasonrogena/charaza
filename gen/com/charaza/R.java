@@ -598,28 +598,30 @@ containing a value of this type.
         public static final int abs__bright_foreground_inverse_holo_dark=0x7f06000a;
         public static final int abs__bright_foreground_inverse_holo_light=0x7f06000b;
         public static final int abs__holo_blue_light=0x7f06000c;
-        public static final int abs__primary_text_disable_only_holo_dark=0x7f06001c;
-        public static final int abs__primary_text_disable_only_holo_light=0x7f06001d;
-        public static final int abs__primary_text_holo_dark=0x7f06001e;
-        public static final int abs__primary_text_holo_light=0x7f06001f;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f06001e;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f06001f;
+        public static final int abs__primary_text_holo_dark=0x7f060020;
+        public static final int abs__primary_text_holo_light=0x7f060021;
         public static final int activityTitleColor=0x7f06000d;
-        public static final int activityTitleSeperatorColor=0x7f060014;
+        public static final int activityTitleSeperatorColor=0x7f060016;
         public static final int activityTitleTextColor=0x7f06000e;
-        public static final int incidentTimeTextColor=0x7f06001a;
-        public static final int layoutColor=0x7f060016;
+        public static final int extraInfoButtonFocusedColor=0x7f060013;
+        public static final int extraInfoOutOfFocusColor=0x7f060014;
+        public static final int incidentTimeTextColor=0x7f06001c;
+        public static final int layoutColor=0x7f060018;
         public static final int normalTextColor=0x7f06000f;
-        public static final int normalTextColorHighlight=0x7f060019;
+        public static final int normalTextColorHighlight=0x7f06001b;
         public static final int normalTextSelectedColor=0x7f060010;
-        public static final int profileActivityLayoutColor=0x7f060017;
-        public static final int profileIncidentBackgroundColor=0x7f06001b;
-        public static final int scrollerColor=0x7f060015;
+        public static final int profileActivityLayoutColor=0x7f060019;
+        public static final int profileIncidentBackgroundColor=0x7f06001d;
+        public static final int scrollerColor=0x7f060017;
         public static final int side_navigation_background=0x7f060000;
         public static final int side_navigation_item_text_color=0x7f060003;
         public static final int side_navigation_list_divider_color=0x7f060002;
         public static final int side_navigation_outside_background=0x7f060001;
-        public static final int tableRowColor=0x7f060013;
+        public static final int tableRowColor=0x7f060015;
         public static final int tableRowSelectedColor=0x7f060012;
-        public static final int tableSeparatorColor=0x7f060018;
+        public static final int tableSeparatorColor=0x7f06001a;
         public static final int tableSeparatorSelectedColor=0x7f060011;
     }
     public static final class dimen {
@@ -850,21 +852,23 @@ containing a value of this type.
         public static final int left_hand=0x7f02005d;
         public static final int left_slap=0x7f02005e;
         public static final int pig_face=0x7f02005f;
-        public static final int really_sad_pig_face=0x7f020060;
-        public static final int right_hand=0x7f020061;
-        public static final int right_slap=0x7f020062;
-        public static final int sad_pig_face=0x7f020063;
-        public static final int side_navigation_shadow=0x7f020064;
-        public static final int spinner_background=0x7f020065;
-        public static final int spinner_default_holo_light=0x7f020066;
-        public static final int spinner_disabled_holo_light=0x7f020067;
-        public static final int spinner_focused_holo_light=0x7f020068;
-        public static final int spinner_pressed_holo_light=0x7f020069;
-        public static final int textfield_default=0x7f02006a;
-        public static final int textfield_disabled=0x7f02006b;
-        public static final int textfield_disabled_selected=0x7f02006c;
-        public static final int textfield_selected=0x7f02006d;
-        public static final int today=0x7f02006e;
+        public static final int plus=0x7f020060;
+        public static final int plus_clicked=0x7f020061;
+        public static final int really_sad_pig_face=0x7f020062;
+        public static final int right_hand=0x7f020063;
+        public static final int right_slap=0x7f020064;
+        public static final int sad_pig_face=0x7f020065;
+        public static final int side_navigation_shadow=0x7f020066;
+        public static final int spinner_background=0x7f020067;
+        public static final int spinner_default_holo_light=0x7f020068;
+        public static final int spinner_disabled_holo_light=0x7f020069;
+        public static final int spinner_focused_holo_light=0x7f02006a;
+        public static final int spinner_pressed_holo_light=0x7f02006b;
+        public static final int textfield_default=0x7f02006c;
+        public static final int textfield_disabled=0x7f02006d;
+        public static final int textfield_disabled_selected=0x7f02006e;
+        public static final int textfield_selected=0x7f02006f;
+        public static final int today=0x7f020070;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f080022;
@@ -998,7 +1002,8 @@ containing a value of this type.
         public static final int sherlock_spinner_item=0x7f03001c;
         public static final int side_navigation=0x7f03001d;
         public static final int side_navigation_item=0x7f03001e;
-        public static final int splash_screen=0x7f03001f;
+        public static final int simple_dropdown_hint=0x7f03001f;
+        public static final int splash_screen=0x7f030020;
     }
     public static final class menu {
         public static final int activity_profile=0x7f0d0000;

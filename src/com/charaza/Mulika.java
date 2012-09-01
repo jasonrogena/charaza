@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -31,7 +34,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Mulika extends SherlockActivity implements View.OnClickListener, OnItemSelectedListener, ISideNavigationCallback
+public class Mulika extends SherlockActivity implements View.OnClickListener, OnItemSelectedListener, ISideNavigationCallback, View.OnFocusChangeListener, View.OnTouchListener
 {
 	//private static final int SWIPE_MIN_DISTANCE=100;//initially 120
 	//private static final int SWIPE_MAX_OFF_PATH=250;
@@ -55,6 +58,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private EditText details;
 	private Context context;
 	private Dialog splashScreen;
+	private Bitmap extraInfoButtonUnclickedImage;
+	private Bitmap extraInfoButtonClickedImage;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
 	@SuppressWarnings("deprecation")
 	@Override
@@ -112,7 +117,9 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		sideNavigationView.setMinimumHeight(minHeight+5);
 		
 		extraInfoButton=(ImageButton)this.findViewById(R.id.extraInfoButton);
-		extraInfoButton.setOnClickListener(this);
+		extraInfoButton.setOnClickListener(this);//click events handled by ontouch
+		extraInfoButton.setOnFocusChangeListener(this);
+		extraInfoButton.setOnTouchListener(this);
 		nameTextBox=(AutoCompleteTextView)findViewById(R.id.nameTextBox);
 		post=(Spinner)findViewById(R.id.post);
         post.setOnItemSelectedListener(this);
@@ -147,6 +154,17 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		names=null;
 		extraPosts=null;
 		posts=null;
+		Thread thread=new Thread(new Runnable()
+		{
+			
+			@Override
+			public void run() 
+			{
+				extraInfoButtonClickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.plus_clicked);
+				extraInfoButtonUnclickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.plus);
+			}
+		});
+		thread.run();
 		
 		//check network connection
 		charazaData=new CharazaData(this);
@@ -194,7 +212,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 
 	public void setNameSuggestions(String[] names)
     {
-    	ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
+    	ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint, names);
     	this.nameTextBox.setAdapter(arrayAdapter);
     	this.names=names;
     }
@@ -217,13 +235,23 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     			extraPosts[i]="Something else";
     		}
     	}
-    	ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, extraPosts);
-    	arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    	ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint, extraPosts);//android.R.layout.simple_dropdown_item_1line
+    	arrayAdapter.setDropDownViewResource(R.layout.simple_dropdown_hint);//android.R.layout.simple_spinner_dropdown_item
     	this.post.setAdapter(arrayAdapter);
-    	ArrayAdapter<String> arrayAdapter2=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, posts);
+    	ArrayAdapter<String> arrayAdapter2=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint, posts);
     	this.somethingElse.setAdapter(arrayAdapter2);
     	this.posts=posts;
     	this.extraPosts=extraPosts;
+    }
+    
+    private void extraInfoButtonClicked()
+    {
+    	Intent intent=new Intent(Mulika.this, ExtraInfo.class);
+		intent.putExtra("networkCheckStatus", networkCheckStatus);
+		Bundle bundle=new Bundle();
+		bundle.putParcelable(profile.PARCELABLE_KEY, profile);
+		intent.putExtras(bundle);
+		startActivity(intent);
     }
     
     @Override
@@ -231,12 +259,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     {
 		if(v==extraInfoButton)
 		{
-			Intent intent=new Intent(Mulika.this, ExtraInfo.class);
-			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			Bundle bundle=new Bundle();
-			bundle.putParcelable(profile.PARCELABLE_KEY, profile);
-			intent.putExtras(bundle);
-			startActivity(intent);
+			extraInfoButtonClicked();
 		}
 		else if(v==mulikaButton)
 		{
@@ -506,6 +529,45 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			mulikaButton.setClickable(true);
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public void onFocusChange(View v, boolean hasFocus)
+	{
+		if(v==extraInfoButton)
+		{
+			if(hasFocus)
+			{
+				extraInfoButton.setBackgroundColor(getResources().getColor(R.color.extraInfoButtonFocusedColor));
+			}
+			else
+			{
+				extraInfoButton.setBackgroundColor(getResources().getColor(R.color.extraInfoOutOfFocusColor));
+			}
+		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) 
+	{
+		if(v==extraInfoButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				extraInfoButton.setImageBitmap(extraInfoButtonClickedImage);
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				extraInfoButton.setImageBitmap(extraInfoButtonUnclickedImage);
+				
+				extraInfoButtonClicked();
+			}
+			else
+			{
+				extraInfoButton.setImageBitmap(extraInfoButtonUnclickedImage);
+			}
+		}
+		return true;
 	}
     
 }
