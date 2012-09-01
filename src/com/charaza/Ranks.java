@@ -42,7 +42,8 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	private ScrollView ranksScrollView;
 	private RelativeLayout ranksRelativeLayout;
 	private TableLayout ranksTableLayout;
-		
+
+	private DisplayMetrics metrics;
 	private CharazaData charazaData;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
     @SuppressWarnings("deprecation")
@@ -71,7 +72,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
         //ranksRelativeLayout.setOnTouchListener(gestureListener);
         int minHeight=0;
         Display display=this.getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
+        metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
         {
@@ -180,22 +181,43 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		}
     		final TableRow tableRow=new TableRow(this);
     		tableRow.setId(1222+Integer.parseInt(profiles[next][0]));
-    		DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-    		float dp = this.getResources().getDimension(R.dimen.tableRowHeight);
-    		int pixels = (int) (metrics.density * dp + 0.5f);
-    		tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,pixels));
+    		//DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+    		//float dp = this.getResources().getDimension(R.dimen.tableRowHeight);
+    		//int pixels = (int) (metrics.density * dp + 0.5f);
+    		int tableRowHeight=0;//20dp
+    		int tableTextSideMargin=0;//4dp
+    		int tableTextSize=0;//14dp
+    		if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+    		{
+    			tableRowHeight=44;//initially 30
+    			tableTextSideMargin=14;//initially 6
+    			tableTextSize=16;//initially 21
+    		}
+    		else if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM)
+    		{
+    			tableRowHeight=27;//initially 20
+    			tableTextSideMargin=10;//initially 4
+    			tableTextSize=15;//initially 14
+    		}
+    		else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
+    		{
+    			tableRowHeight=20;//initially 15
+    			tableTextSideMargin=6;//initially 3
+    			tableTextSize=15;//initially 11
+    		}
+    		tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,tableRowHeight));
     		
     		final TextView profileName=new TextView(this);
-    		TableRow.LayoutParams profileNameLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,pixels);
-    		dp=this.getResources().getDimension(R.dimen.tableTextSideMargin);
-    		pixels=(int)(metrics.density*dp+0.5f);
-    		profileNameLayoutParams.setMargins(pixels, 0, 0, 0);//TODO: set left margin to 4dp
+    		TableRow.LayoutParams profileNameLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,tableRowHeight);
+    		//dp=this.getResources().getDimension(R.dimen.tableTextSideMargin);
+    		//pixels=(int)(metrics.density*dp+0.5f);
+    		profileNameLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
     		profileName.setId(1222+Integer.parseInt(profiles[next][0])+222);
     		final int profileId=Integer.parseInt(profiles[next][0]);
     		Log.d("rank table id", String.valueOf(profileId));
     		profileName.setText(profiles[next][1]);
     		Log.d("rank table", profiles[next][1]+profiles[next][3]);
-    		profileName.setTextSize(this.getResources().getDimension(R.dimen.tableTextSize));
+    		profileName.setTextSize(tableTextSize);
     		profileName.setTextColor(this.getResources().getColor(R.color.normalTextColor));
     		profileName.setGravity(Gravity.CENTER_VERTICAL);
     		profileName.setLayoutParams(profileNameLayoutParams);
@@ -203,24 +225,24 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		
     		final View rowSeparator=new View(this);
     		rowSeparator.setId(1222+Integer.parseInt(profiles[next][0])+2222);
-    		dp=this.getResources().getDimension(R.dimen.tableRowHeight);
-    		pixels = (int) (metrics.density * dp + 0.5f);
-    		dp=this.getResources().getDimension(R.dimen.tableCellSeparatorWidth);
-    		int pixels2=(int)(metrics.density*dp+0.5f);
-    		rowSeparator.setLayoutParams(new TableRow.LayoutParams(pixels2,pixels));
+    		//dp=this.getResources().getDimension(R.dimen.tableRowHeight);
+    		//pixels = (int) (metrics.density * dp + 0.5f);
+    		//dp=this.getResources().getDimension(R.dimen.tableCellSeparatorWidth);
+    		//int pixels2=(int)(metrics.density*dp+0.5f);
+    		rowSeparator.setLayoutParams(new TableRow.LayoutParams(1,tableRowHeight));
     		rowSeparator.setBackgroundColor(this.getResources().getColor(R.color.tableSeparatorColor));
     		tableRow.addView(rowSeparator);
     		
     		final TextView profileCharazwad=new TextView(this);
-    		dp = this.getResources().getDimension(R.dimen.tableRowHeight);
-    		pixels = (int) (metrics.density * dp + 0.5f);
-    		TableRow.LayoutParams profileCharazwadLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,pixels);
-    		dp=25f;
-    		pixels=(int)(metrics.density*dp+0.5f);
-    		profileCharazwadLayoutParams.setMargins(pixels, 0, 0, 0);//TODO: set left margin to 4dp
+    		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
+    		//pixels = (int) (metrics.density * dp + 0.5f);
+    		TableRow.LayoutParams profileCharazwadLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,tableRowHeight);
+    		//dp=25f;
+    		//pixels=(int)(metrics.density*dp+0.5f);
+    		profileCharazwadLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
     		profileCharazwad.setId(1222+Integer.parseInt(profiles[next][0])+22222);
     		profileCharazwad.setText(profiles[next][3]);
-    		profileCharazwad.setTextSize(this.getResources().getDimension(R.dimen.tableTextSize));
+    		profileCharazwad.setTextSize(tableTextSize);
     		profileCharazwad.setTextColor(this.getResources().getColor(R.color.normalTextColor));
     		profileCharazwad.setGravity(Gravity.CENTER_VERTICAL);
     		profileCharazwad.setLayoutParams(profileCharazwadLayoutParams);
@@ -238,26 +260,30 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 						//profileName.setTextColor(getResources().getColor(R.color.normalTextSelectedColor));
 						//profileCharazwad.setTextColor(getResources().getColor(R.color.normalTextSelectedColor));
 						//rowSeparator.setBackgroundColor(getResources().getColor(R.color.tableSeparatorSelectedColor));
-						
-						Intent intent=new Intent(Ranks.this, ProfileActivity.class);
-						intent.putExtra("profileId", profileId);
-						intent.putExtra("networkCheckStatus", networkCheckStatus);
-						startActivity(intent);
 					}
-					else if(event.getAction()==MotionEvent.ACTION_CANCEL || event.getAction()==MotionEvent.ACTION_UP)
+					else if(event.getAction()==MotionEvent.ACTION_UP)
 					{
 						tableRow.setBackgroundColor(getResources().getColor(R.color.tableRowColor));
 						//profileName.setTextColor(getResources().getColor(R.color.normalTextColor));
 						//profileCharazwad.setTextColor(getResources().getColor(R.color.normalTextColor));
 						//rowSeparator.setBackgroundColor(getResources().getColor(R.color.tableSeparatorColor));
+
+						Intent intent=new Intent(Ranks.this, ProfileActivity.class);
+						intent.putExtra("profileId", profileId);
+						intent.putExtra("networkCheckStatus", networkCheckStatus);
+						startActivity(intent);
+					}
+					else
+					{
+						tableRow.setBackgroundColor(getResources().getColor(R.color.tableRowColor));
 					}
 					return true;
 				}
 			});
     		
-    		dp = this.getResources().getDimension(R.dimen.tableRowHeight);
-    		pixels = (int) (metrics.density * dp + 0.5f);
-    		ranksTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,pixels));
+    		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
+    		//pixels = (int) (metrics.density * dp + 0.5f);
+    		ranksTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,tableRowHeight));
     		profiles[next][0]=null;
     		
     		count++;
