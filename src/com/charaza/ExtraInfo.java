@@ -68,6 +68,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private ScrollView extraInfoScrollView;
 	private Context context;
 	private int addedAliasButtonTextSize;
+	private int clickedAliasButton;
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -136,6 +137,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		profile.setContext(this);
 		context=this;
 		addedAliasButtonTextSize=17;
+		clickedAliasButton=-1;
 		
 		charazaData=new CharazaData(this);
 		addedAliases=new ArrayList<Button>();
@@ -248,6 +250,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
     private void addedAliasButtonClicked(Button newButton)
     {
     	aliasTypeTextView.setVisibility(TextView.GONE);
+    	clickedAliasButton=newButton.getId()-325;
 		aliasEditText.setText(profile.getAliasAt(newButton.getId()-325));
 		somethingElseAutoComplete.setVisibility(AutoCompleteTextView.VISIBLE);
 		somethingElseAutoComplete.setAdapter(arrayAdapter);//arrayAdapter is initialised in Initializer running in another thread
@@ -336,99 +339,109 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	
 	private void plusClicked()
 	{
+		clickedAliasButton=-1;
 		showListPopup();
 	}
 	
 	private void aliasAddButtonClicked()
 	{
-		RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(plus.getWidth(), plus.getHeight());
-		final Button newButton=new Button(this);
-		if(aliasTypeTextView.getVisibility()==TextView.VISIBLE)
+		if(clickedAliasButton==-1)
 		{
-			newButton.setText(aliasTypeTextView.getText());
-		}
-		else
-		{
-			newButton.setText(somethingElseAutoComplete.getText());
-		}
-		if(addedAliases.isEmpty())
-		{
-			helpText.setVisibility(TextView.GONE);
-			//layoutParams.addRule(RelativeLayout.BELOW, R.id.extraInfoTitleSeperator);
-			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			layoutParams.topMargin=18;
-			int id=325;
-			newButton.setId(id);
-		}
-		else
-		{
-			layoutParams.addRule(RelativeLayout.BELOW, addedAliases.get(addedAliases.size()-1).getId());
-			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			layoutParams.topMargin=12;
-			int id=325+addedAliases.size();
-			newButton.setId(id);
-		}
-		newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
-		{
-			
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) 
+			RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(plus.getWidth(), plus.getHeight());
+			final Button newButton=new Button(this);
+			if(aliasTypeTextView.getVisibility()==TextView.VISIBLE)
 			{
-				if(hasFocus)
-				{
-					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
-				}
-				else
-				{
-					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-				}
+				newButton.setText(aliasTypeTextView.getText());
 			}
-		});
-		newButton.setOnTouchListener(new View.OnTouchListener()
-		{
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) 
+			else
 			{
-				if(event.getAction()==MotionEvent.ACTION_DOWN)
+				newButton.setText(somethingElseAutoComplete.getText());
+			}
+			if(addedAliases.isEmpty())
+			{
+				helpText.setVisibility(TextView.GONE);
+				//layoutParams.addRule(RelativeLayout.BELOW, R.id.extraInfoTitleSeperator);
+				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+				layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				layoutParams.topMargin=18;
+				int id=325;
+				newButton.setId(id);
+			}
+			else
+			{
+				layoutParams.addRule(RelativeLayout.BELOW, addedAliases.get(addedAliases.size()-1).getId());
+				layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				layoutParams.topMargin=12;
+				int id=325+addedAliases.size();
+				newButton.setId(id);
+			}
+			newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
+			{
+				
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) 
 				{
-					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+					if(hasFocus)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+					}
+					else
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+					}
 				}
-				else if(event.getAction()==MotionEvent.ACTION_UP)
+			});
+			newButton.setOnTouchListener(new View.OnTouchListener()
+			{
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) 
 				{
-					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+					if(event.getAction()==MotionEvent.ACTION_DOWN)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+					}
+					else if(event.getAction()==MotionEvent.ACTION_UP)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+						addedAliasButtonClicked(newButton);
+					}
+					else
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+					}
+					return true;
+				}
+			});
+			newButton.setOnClickListener(new OnClickListener() 
+			{
+				
+				@Override
+				public void onClick(View v) 
+				{
 					addedAliasButtonClicked(newButton);
 				}
-				else
-				{
-					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-				}
-				return true;
-			}
-		});
-		newButton.setOnClickListener(new OnClickListener() 
+			});
+			newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
+			newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);//TODO:specify textsize in dp
+			newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			newButton.setLayoutParams(layoutParams);
+			RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
+			layoutParams2.addRule(RelativeLayout.BELOW,newButton.getId());
+			layoutParams2.topMargin=12;
+			layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			plus.setLayoutParams(layoutParams2);
+			addedAliases.add(newButton);
+			//profile.setAddedAliases(addedAliases);
+			profile.addAlias(newButton.getText().toString(), aliasEditText.getText().toString());
+			extraInfoRelativeLayout.addView(newButton);
+		}
+		else
 		{
-			
-			@Override
-			public void onClick(View v) 
-			{
-				addedAliasButtonClicked(newButton);
-			}
-		});
-		newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
-		newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);//TODO:specify textsize in dp
-		newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-		newButton.setLayoutParams(layoutParams);
-		RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
-		layoutParams2.addRule(RelativeLayout.BELOW,newButton.getId());
-		layoutParams2.topMargin=12;
-		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		plus.setLayoutParams(layoutParams2);
-		addedAliases.add(newButton);
-		//profile.setAddedAliases(addedAliases);
-		profile.addAlias(newButton.getText().toString(), aliasEditText.getText().toString());
-		extraInfoRelativeLayout.addView(newButton);
+			Button editedButton=(Button)this.findViewById(clickedAliasButton+325);
+			editedButton.setText(somethingElseAutoComplete.getText().toString());
+			profile.setAliasAt(clickedAliasButton, somethingElseAutoComplete.getText().toString(), aliasEditText.getText().toString());
+		}
 		addAliasDialog.dismiss();
 	}
 	

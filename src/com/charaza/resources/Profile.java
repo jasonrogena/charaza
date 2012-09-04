@@ -76,6 +76,11 @@ public class Profile implements Parcelable
 	{
 		return aliases.get(index);
 	}
+	public void setAliasAt(int index, String type, String text)
+	{
+		aliasTypes.set(index, type);
+		aliases.set(index, text);
+	}
 	public String getAliasTypeAt(int index)
 	{
 		return aliasTypes.get(index);
