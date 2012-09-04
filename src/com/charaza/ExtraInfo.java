@@ -18,6 +18,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Menu;
@@ -65,6 +66,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private RelativeLayout extraInfoRelativeLayout;
 	private ScrollView extraInfoScrollView;
 	private Context context;
+	private int addedAliasButtonTextSize;
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -127,6 +129,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		profile=bundle.getParcelable(profile.PARCELABLE_KEY);
 		profile.setContext(this);
 		context=this;
+		addedAliasButtonTextSize=17;
 		
 		charazaData=new CharazaData(this);
 		addedAliases=new ArrayList<Button>();
@@ -204,6 +207,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 						addedAliasButtonClicked(newButton);
 					}
 				});
+				newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);
 				newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
 				newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				newButton.setLayoutParams(lp);
@@ -391,7 +395,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				}
 			});
 			newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
-			//newButton.setTextSize(, size)//TODO:specify textsize in dp
+			newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);//TODO:specify textsize in dp
 			newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			newButton.setLayoutParams(layoutParams);
 			RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
