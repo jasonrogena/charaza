@@ -21,6 +21,7 @@ import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -156,20 +157,55 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 					int id=325+index;
 					newButton.setId(id);
 				}
+				newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
+				{
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) 
+					{
+						if(hasFocus)
+						{
+							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+						}
+						else
+						{
+							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+						}
+					}
+				});
+				newButton.setOnTouchListener(new View.OnTouchListener()
+				{
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) 
+					{
+						if(event.getAction()==MotionEvent.ACTION_DOWN)
+						{
+							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+						}
+						else if(event.getAction()==MotionEvent.ACTION_UP)
+						{
+							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+							addedAliasButtonClicked(newButton);
+						}
+						else
+						{
+							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+						}
+						return true;
+					}
+				});
 				newButton.setOnClickListener(new OnClickListener() 
 				{
 					
 					@Override
 					public void onClick(View v) 
 					{	
-						aliasTypeTextView.setVisibility(TextView.GONE);
-						aliasEditText.setText(profile.getAliasAt(newButton.getId()-325));
-						somethingElseAutoComplete.setVisibility(AutoCompleteTextView.VISIBLE);
-						somethingElseAutoComplete.setAdapter(arrayAdapter);//arrayAdapter is initialised in Initializer running in another thread
-						somethingElseAutoComplete.setText(profile.getAliasTypeAt(newButton.getId()-325));
-						addAliasDialog.show();
+						addedAliasButtonClicked(newButton);
 					}
 				});
+				newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
+				newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				newButton.setLayoutParams(lp);
 				if(index==profile.getNumberOfAliases()-1)//last button
 				{
@@ -197,6 +233,16 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         	networkCheckStatus=1;
         }
 		
+    }
+    
+    private void addedAliasButtonClicked(Button newButton)
+    {
+    	aliasTypeTextView.setVisibility(TextView.GONE);
+		aliasEditText.setText(profile.getAliasAt(newButton.getId()-325));
+		somethingElseAutoComplete.setVisibility(AutoCompleteTextView.VISIBLE);
+		somethingElseAutoComplete.setAdapter(arrayAdapter);//arrayAdapter is initialised in Initializer running in another thread
+		somethingElseAutoComplete.setText(profile.getAliasTypeAt(newButton.getId()-325));
+		addAliasDialog.show();
     }
     
     /*@Override
@@ -297,23 +343,56 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				int id=325+addedAliases.size();
 				newButton.setId(id);
 			}
+			newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
+			{
+				
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) 
+				{
+					if(hasFocus)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+					}
+					else
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+					}
+				}
+			});
+			newButton.setOnTouchListener(new View.OnTouchListener()
+			{
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) 
+				{
+					if(event.getAction()==MotionEvent.ACTION_DOWN)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+					}
+					else if(event.getAction()==MotionEvent.ACTION_UP)
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+						addedAliasButtonClicked(newButton);
+					}
+					else
+					{
+						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+					}
+					return true;
+				}
+			});
 			newButton.setOnClickListener(new OnClickListener() 
 			{
 				
 				@Override
 				public void onClick(View v) 
 				{
-					//aliasTypeTextView=(TextView)addAliasDialog.findViewById(R.id.aliasTypeTextView);
-					aliasTypeTextView.setVisibility(TextView.GONE);
-					//aliasEditText=(EditText)addAliasDialog.findViewById(R.id.aliasEditText);
-					aliasEditText.setText(profile.getAliasAt(newButton.getId()-325));
-					//somethingElseAutoComplete=(AutoCompleteTextView)addAliasDialog.findViewById(R.id.somethingElseAutoComplete);
-					somethingElseAutoComplete.setVisibility(AutoCompleteTextView.VISIBLE);
-					somethingElseAutoComplete.setAdapter(arrayAdapter);
-					somethingElseAutoComplete.setText(profile.getAliasTypeAt(newButton.getId()-325));
-					addAliasDialog.show();
+					addedAliasButtonClicked(newButton);
 				}
 			});
+			newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
+			//newButton.setTextSize(, size)//TODO:specify textsize in dp
+			newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			newButton.setLayoutParams(layoutParams);
 			RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
 			layoutParams2.addRule(RelativeLayout.BELOW,newButton.getId());

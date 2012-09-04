@@ -17,4 +17,6 @@
     <color name="normalTextColorHighlight">#FFFFFF</color>
     <color name="incidentTimeTextColor">#0099cc</color>
     <color name="profileIncidentBackgroundColor">#FFFFFF</color>
+    <color name="aliasButtonBackground">#dee0e1</color>
+    <color name="aliasButtonFocusedColor">#c3e9fb</color>
 </resources>

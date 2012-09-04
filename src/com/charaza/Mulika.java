@@ -420,6 +420,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			if(splashScreen.isShowing())
 			{
 				splashScreen.dismiss();
+				nameTextBox.requestFocus();
 			}
 			super.onPostExecute(result);
 		}
@@ -456,6 +457,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			if(splashScreen.isShowing())
 			{
 				splashScreen.dismiss();
+				nameTextBox.requestFocus();
 			}
 			super.onPostExecute(result);
 		}
