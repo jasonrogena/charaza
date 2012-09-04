@@ -24,6 +24,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -42,11 +43,11 @@ import android.widget.TextView;
 //import android.widget.Toast;
 import android.widget.Toast;
 
-public class ExtraInfo extends SherlockActivity implements View.OnClickListener, OnItemClickListener, ISideNavigationCallback
+public class ExtraInfo extends SherlockActivity implements View.OnClickListener, OnItemClickListener, ISideNavigationCallback, View.OnTouchListener, View.OnFocusChangeListener
 {
 	private SideNavigationView sideNavigationView;
 	private ImageButton plus;
-	private ImageButton doneButton;
+	private Button doneButton;
 	private CharazaData charazaData;
 	private int networkCheckStatus=0;
 	private String[][] aliasTypes;
@@ -56,7 +57,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private ArrayAdapter<String> extraArrayAdapter;
 	private Dialog aliasTypeDialog;
 	private Dialog addAliasDialog;
-	private ImageButton aliasAddButton;
+	private Button aliasAddButton;
 	private List<Button> addedAliases;
 	private TextView aliasTypeTextView;
 	private AutoCompleteTextView somethingElseAutoComplete;
@@ -102,15 +103,19 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		sideNavigationView.setMinimumHeight(minHeight+5);
 		
-		doneButton=(ImageButton)this.findViewById(R.id.doneButton);
+		doneButton=(Button)this.findViewById(R.id.doneButton);
 		doneButton.setOnClickListener(this);
+		doneButton.setOnTouchListener(this);
 		plus=(ImageButton)this.findViewById(R.id.plus);
 		plus.setOnClickListener(this);
+		plus.setOnTouchListener(this);
+		plus.setOnFocusChangeListener(this);
 		
 		aliasTypeDialog=new Dialog(this);
 		aliasTypeDialog.setContentView(R.layout.alias_type_popup);
 		
 		addAliasDialog=new Dialog(this);
+		addAliasDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		addAliasDialog.setContentView(R.layout.add_alias_dialog);
 		WindowManager.LayoutParams layoutParams=addAliasDialog.getWindow().getAttributes();
 		layoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;//since FILL_PARENT was deprecated
@@ -118,7 +123,8 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		aliasEditText=(EditText)addAliasDialog.findViewById(R.id.aliasEditText);
 		somethingElseAutoComplete=(AutoCompleteTextView)addAliasDialog.findViewById(R.id.somethingElseAutoComplete);
 		
-		aliasAddButton=(ImageButton)addAliasDialog.findViewById(R.id.aliasAddButton);
+		aliasAddButton=(Button)addAliasDialog.findViewById(R.id.aliasAddButton);
+		aliasAddButton.setOnTouchListener(this);
 		aliasAddButton.setOnClickListener(this);
 		helpText=(TextView)this.findViewById(R.id.helpText);
 		
@@ -305,110 +311,125 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	{
 		if(v==doneButton)
 		{
-			//profile.setAddedAliases(addedAliases);
-			Intent intent=new Intent(ExtraInfo.this, Mulika.class);
-			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			Bundle bundle=new Bundle();
-			bundle.putParcelable(profile.PARCELABLE_KEY, profile);
-			intent.putExtras(bundle);
-			startActivity(intent);
+			doneButtonClicked();
 		}
 		else if (v==plus)
 		{
-			showListPopup();
+			plusClicked();
 		}
 		else if(v==aliasAddButton)
 		{
-			RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(plus.getWidth(), plus.getHeight());
-			final Button newButton=new Button(this);
-			if(aliasTypeTextView.getVisibility()==TextView.VISIBLE)
+			aliasAddButtonClicked();
+		}
+	}
+	
+	private void doneButtonClicked()
+	{
+		//profile.setAddedAliases(addedAliases);
+		Intent intent=new Intent(ExtraInfo.this, Mulika.class);
+		intent.putExtra("networkCheckStatus", networkCheckStatus);
+		Bundle bundle=new Bundle();
+		bundle.putParcelable(profile.PARCELABLE_KEY, profile);
+		intent.putExtras(bundle);
+		startActivity(intent);
+	}
+	
+	private void plusClicked()
+	{
+		showListPopup();
+	}
+	
+	private void aliasAddButtonClicked()
+	{
+		RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(plus.getWidth(), plus.getHeight());
+		final Button newButton=new Button(this);
+		if(aliasTypeTextView.getVisibility()==TextView.VISIBLE)
+		{
+			newButton.setText(aliasTypeTextView.getText());
+		}
+		else
+		{
+			newButton.setText(somethingElseAutoComplete.getText());
+		}
+		if(addedAliases.isEmpty())
+		{
+			helpText.setVisibility(TextView.GONE);
+			//layoutParams.addRule(RelativeLayout.BELOW, R.id.extraInfoTitleSeperator);
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			layoutParams.topMargin=18;
+			int id=325;
+			newButton.setId(id);
+		}
+		else
+		{
+			layoutParams.addRule(RelativeLayout.BELOW, addedAliases.get(addedAliases.size()-1).getId());
+			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			layoutParams.topMargin=12;
+			int id=325+addedAliases.size();
+			newButton.setId(id);
+		}
+		newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
+		{
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) 
 			{
-				newButton.setText(aliasTypeTextView.getText());
-			}
-			else
-			{
-				newButton.setText(somethingElseAutoComplete.getText());
-			}
-			if(addedAliases.isEmpty())
-			{
-				helpText.setVisibility(TextView.GONE);
-				//layoutParams.addRule(RelativeLayout.BELOW, R.id.extraInfoTitleSeperator);
-				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-				layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				layoutParams.topMargin=18;
-				int id=325;
-				newButton.setId(id);
-			}
-			else
-			{
-				layoutParams.addRule(RelativeLayout.BELOW, addedAliases.get(addedAliases.size()-1).getId());
-				layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				layoutParams.topMargin=12;
-				int id=325+addedAliases.size();
-				newButton.setId(id);
-			}
-			newButton.setOnFocusChangeListener(new View.OnFocusChangeListener()
-			{
-				
-				@Override
-				public void onFocusChange(View v, boolean hasFocus) 
+				if(hasFocus)
 				{
-					if(hasFocus)
-					{
-						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
-					}
-					else
-					{
-						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-					}
+					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
 				}
-			});
-			newButton.setOnTouchListener(new View.OnTouchListener()
-			{
-				
-				@Override
-				public boolean onTouch(View v, MotionEvent event) 
+				else
 				{
-					if(event.getAction()==MotionEvent.ACTION_DOWN)
-					{
-						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
-					}
-					else if(event.getAction()==MotionEvent.ACTION_UP)
-					{
-						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-						addedAliasButtonClicked(newButton);
-					}
-					else
-					{
-						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-					}
-					return true;
+					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				}
-			});
-			newButton.setOnClickListener(new OnClickListener() 
+			}
+		});
+		newButton.setOnTouchListener(new View.OnTouchListener()
+		{
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) 
 			{
-				
-				@Override
-				public void onClick(View v) 
+				if(event.getAction()==MotionEvent.ACTION_DOWN)
 				{
+					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+				}
+				else if(event.getAction()==MotionEvent.ACTION_UP)
+				{
+					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 					addedAliasButtonClicked(newButton);
 				}
-			});
-			newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
-			newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);//TODO:specify textsize in dp
-			newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-			newButton.setLayoutParams(layoutParams);
-			RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
-			layoutParams2.addRule(RelativeLayout.BELOW,newButton.getId());
-			layoutParams2.topMargin=12;
-			layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			plus.setLayoutParams(layoutParams2);
-			addedAliases.add(newButton);
-			//profile.setAddedAliases(addedAliases);
-			profile.addAlias(newButton.getText().toString(), aliasEditText.getText().toString());
-			extraInfoRelativeLayout.addView(newButton);
-			addAliasDialog.dismiss();
-		}
+				else
+				{
+					newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+				}
+				return true;
+			}
+		});
+		newButton.setOnClickListener(new OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(View v) 
+			{
+				addedAliasButtonClicked(newButton);
+			}
+		});
+		newButton.setTextColor(getResources().getColor(R.color.normalTextColor));
+		newButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, addedAliasButtonTextSize);//TODO:specify textsize in dp
+		newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+		newButton.setLayoutParams(layoutParams);
+		RelativeLayout.LayoutParams layoutParams2=new RelativeLayout.LayoutParams(plus.getWidth(),plus.getHeight());
+		layoutParams2.addRule(RelativeLayout.BELOW,newButton.getId());
+		layoutParams2.topMargin=12;
+		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		plus.setLayoutParams(layoutParams2);
+		addedAliases.add(newButton);
+		//profile.setAddedAliases(addedAliases);
+		profile.addAlias(newButton.getText().toString(), aliasEditText.getText().toString());
+		extraInfoRelativeLayout.addView(newButton);
+		addAliasDialog.dismiss();
 	}
 	
 	private void showListPopup()
@@ -422,7 +443,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	
 	public void setArrayAdapter(String[] aliasTypesText)
 	{
-		arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,aliasTypesText);
+		arrayAdapter=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint,aliasTypesText);
 		aliasTypesText[aliasTypes.length]="Something else";
 		extraAliasTypes=aliasTypesText;
 		extraArrayAdapter=new ArrayAdapter<String>(this,R.layout.custom_list_item,R.id.text1,aliasTypesText);
@@ -497,6 +518,82 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			charazaData.closeDatabase();
 			startActivity(intent);
+		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		if(v==doneButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonFocusedBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.doneButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.doneButtonTextColor));
+				doneButtonClicked();
+			}
+			else
+			{
+				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.doneButtonTextColor));
+			}
+		}
+		else if(v==plus)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+				plusClicked();
+			}
+			else
+			{
+				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			}
+		}
+		else if(v==aliasAddButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonFocusedBackground));
+				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
+				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+				aliasAddButtonClicked();
+			}
+			else
+			{
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
+				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) 
+	{
+		if(v==plus)
+		{
+			if(hasFocus)
+			{
+				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+			}
+			else
+			{
+				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			}
 		}
 	}
 	
