@@ -577,18 +577,18 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
 				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonFocusedBackground));
-				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonFocusedTextColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonFocusedTextColor));
 			}
 			else if(event.getAction()==MotionEvent.ACTION_UP)
 			{
 				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
-				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
 				aliasAddButtonClicked();
 			}
 			else
 			{
 				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
-				doneButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
 			}
 		}
 		return true;

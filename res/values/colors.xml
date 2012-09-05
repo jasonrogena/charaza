@@ -21,10 +21,10 @@
     <color name="aliasButtonFocusedColor">#c3e9fb</color>
     <color name="doneButtonBackgroundColor">#2d2d2d</color>
     <color name="doneButtonTextColor">#ffffff</color>
-    <color name="doneButtonFocusedBackgroundColor">#ffffff</color>
+    <color name="doneButtonFocusedBackgroundColor">#dee0e1</color>
     <color name="doneButtonFocusedTextColor">#2d2d2d</color>
     <color name="aliasAddButtonBackground">#2d2d2d</color>
     <color name="aliasAddButtonTextColor">#ffffff</color>
-    <color name="aliasAddButtonFocusedBackground">#ffffff</color>
+    <color name="aliasAddButtonFocusedBackground">#dee0e1</color>
     <color name="aliasAddButtonFocusedTextColor">#2d2d2d</color>
 </resources>
