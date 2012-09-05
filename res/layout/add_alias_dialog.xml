@@ -42,8 +42,8 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginTop="@dimen/fromUnrelatedViewVMargin"
-        android:background="@color/aliasAddButtonBackground"
+        android:background="@color/normalButtonBackgroundColor"
         android:text="@string/aliasAddButtonText"
-        android:textColor="@color/aliasAddButtonTextColor"
+        android:textColor="@color/normalButtonTextColor"
         android:textSize="17dp"/>
 </LinearLayout>

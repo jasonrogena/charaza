@@ -24,6 +24,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -31,11 +32,13 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TableLayout.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -65,6 +68,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private EditText aliasEditText;
 	private Profile profile;
 	private RelativeLayout extraInfoRelativeLayout;
+	private RelativeLayout extraInfoMainLayout;
 	private ScrollView extraInfoScrollView;
 	private Context context;
 	private int addedAliasButtonTextSize;
@@ -77,6 +81,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         setContentView(R.layout.extra_info);
         
         //initialise views
+        extraInfoMainLayout=(RelativeLayout)this.findViewById(R.id.extraInfoMainLayout);
         extraInfoScrollView=(ScrollView)this.findViewById(R.id.extraInfoScrollView);
         extraInfoRelativeLayout=(RelativeLayout)this.findViewById(R.id.extraInfoRelativeLayout);
         int minHeight=0;
@@ -95,7 +100,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         {
         	minHeight=display.getHeight()-24-34;
         }
-		extraInfoRelativeLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
+        //extraInfoMainLayout.setMinimumHeight(minHeight);
 		
 		sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_extra_info);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -103,10 +108,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		this.setTitle(R.string.mulikaSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		sideNavigationView.setMinimumHeight(minHeight+5);
-		
 		doneButton=(Button)this.findViewById(R.id.doneButton);
 		doneButton.setOnClickListener(this);
 		doneButton.setOnTouchListener(this);
+		extraInfoScrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-doneButton.getLayoutParams().height));
+		
 		plus=(ImageButton)this.findViewById(R.id.plus);
 		plus.setOnClickListener(this);
 		plus.setOnTouchListener(this);
@@ -277,7 +283,15 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	extraInfoScrollView.fullScroll(0);
+    	extraInfoScrollView.post(new Runnable() 
+		{
+
+	        @Override
+	        public void run() 
+	        {
+	        	extraInfoScrollView.fullScroll(ScrollView.FOCUS_UP);
+	        }
+	    });
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
     	if(this.getCurrentFocus()!=null)
     	{
@@ -435,6 +449,15 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			//profile.setAddedAliases(addedAliases);
 			profile.addAlias(newButton.getText().toString(), aliasEditText.getText().toString());
 			extraInfoRelativeLayout.addView(newButton);
+			extraInfoScrollView.post(new Runnable() 
+			{
+
+		        @Override
+		        public void run() 
+		        {
+		            extraInfoScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+		        }
+		    });
 		}
 		else
 		{
@@ -541,19 +564,19 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		{
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
-				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonFocusedBackgroundColor));
-				doneButton.setTextColor(getResources().getColor(R.color.doneButtonFocusedTextColor));
+				doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
 			}
 			else if(event.getAction()==MotionEvent.ACTION_UP)
 			{
-				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonBackgroundColor));
-				doneButton.setTextColor(getResources().getColor(R.color.doneButtonTextColor));
+				doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				doneButtonClicked();
 			}
 			else
 			{
-				doneButton.setBackgroundColor(getResources().getColor(R.color.doneButtonBackgroundColor));
-				doneButton.setTextColor(getResources().getColor(R.color.doneButtonTextColor));
+				doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 			}
 		}
 		else if(v==plus)
@@ -576,19 +599,19 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		{
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
-				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonFocusedBackground));
-				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonFocusedTextColor));
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
 			}
 			else if(event.getAction()==MotionEvent.ACTION_UP)
 			{
-				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
-				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				aliasAddButtonClicked();
 			}
 			else
 			{
-				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.aliasAddButtonBackground));
-				aliasAddButton.setTextColor(getResources().getColor(R.color.aliasAddButtonTextColor));
+				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 			}
 		}
 		return true;

@@ -53,8 +53,8 @@ public class CharazaData implements Serializable
 	private DatabaseHelper databaseHelper;
 	private int httpPostTimout=20000;
 	private int httpResponseTimout=20000;
-	//public static String baseURL="http://10.0.2.2/~jason/charaza";
-	public static String baseURL="http://charaza.zxq.net";
+	public static String baseURL="http://10.0.2.2/~jason/charaza";
+	//public static String baseURL="http://charaza.zxq.net";
 
 	public CharazaData(Context context) 
 	{
@@ -166,6 +166,7 @@ public class CharazaData implements Serializable
 								results[count][0]=jsonObject.getString("_id");
 								results[count][1]=jsonObject.getString("text");
 								results[count][2]=jsonObject.getString("time");
+								Log.d("incident", "new incident added");
 								count++;
 							}
 							return results;

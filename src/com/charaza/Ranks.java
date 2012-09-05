@@ -119,7 +119,15 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	ranksScrollView.fullScroll(0);
+    	ranksScrollView.post(new Runnable() 
+		{
+
+	        @Override
+	        public void run() 
+	        {
+	        	ranksScrollView.fullScroll(ScrollView.FOCUS_UP);
+	        }
+	    });
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
     	if(this.getCurrentFocus()!=null)
     	{

@@ -117,7 +117,15 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	profileActivityScrollView.fullScroll(0);
+    	profileActivityScrollView.post(new Runnable() 
+		{
+
+	        @Override
+	        public void run() 
+	        {
+	        	profileActivityScrollView.fullScroll(ScrollView.FOCUS_UP);
+	        }
+	    });
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
     	if(this.getCurrentFocus()!=null)
     	{
@@ -150,23 +158,78 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     		incidentTime.setId(23442+count);
     		incidentTime.setText(incidents[count][2]);
     		RelativeLayout.LayoutParams incidentTimeLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-    		int incidentTimeLayoutParamsTopMargin;
+    		
     		if(count==0)
     		{
     			incidentTimeLayoutParams.addRule(RelativeLayout.BELOW,R.id.profileActivityAliasPost);
-    			incidentTimeLayoutParamsTopMargin = 35; 
     		}
     		
     		else
     		{
     			incidentTimeLayoutParams.addRule(RelativeLayout.BELOW,4562+count-1);
-    			incidentTimeLayoutParamsTopMargin = 25;
     		}
+    		Display display=this.getWindowManager().getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int incidentTimeLayoutParamsTopMargin=0;
+            int incidentTimeSideMargin=0;
+            int incidentTimeTextSize=0;
+            int incidentTextLayoutParamsTopMargin=0;
+            int incidentTextSideMargin=0;
+            int incidentTextSize=0;
+            if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+            {
+            	if(count==0)
+            	{
+            		incidentTimeLayoutParamsTopMargin = 35; 
+            	}
+            	else
+            	{
+            		incidentTimeLayoutParamsTopMargin = 27; 
+            	}
+            	incidentTimeSideMargin=11;
+            	incidentTimeTextSize=13;
+            	incidentTextLayoutParamsTopMargin=7;
+            	incidentTextSideMargin=12;
+            	incidentTextSize=15;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM)
+            {
+            	if(count==0)
+            	{
+            		incidentTimeLayoutParamsTopMargin = 25; 
+            	}
+            	else
+            	{
+            		incidentTimeLayoutParamsTopMargin = 15; 
+            	}
+            	incidentTimeSideMargin=10;
+            	incidentTimeTextSize=12;
+            	incidentTextLayoutParamsTopMargin=5;
+            	incidentTextSideMargin=10;
+            	incidentTextSize=14;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
+            {
+            	if(count==0)
+            	{
+            		incidentTimeLayoutParamsTopMargin = 28; 
+            	}
+            	else
+            	{
+            		incidentTimeLayoutParamsTopMargin = 16; 
+            	}
+            	incidentTimeSideMargin=7;
+            	incidentTimeTextSize=12;
+            	incidentTextLayoutParamsTopMargin=6;
+            	incidentTextSideMargin=7;
+            	incidentTextSize=14;
+            }
     		incidentTimeLayoutParams.topMargin=incidentTimeLayoutParamsTopMargin;
-    		incidentTimeLayoutParams.leftMargin=getResources().getDimensionPixelSize(R.dimen.sideMargin);
-    		incidentTimeLayoutParams.rightMargin=getResources().getDimensionPixelSize(R.dimen.sideMargin);
+    		incidentTimeLayoutParams.leftMargin=incidentTimeSideMargin;
+    		incidentTimeLayoutParams.rightMargin=incidentTimeSideMargin;
     		incidentTime.setTextColor(getResources().getColor(R.color.incidentTimeTextColor));
-    		incidentTime.setTextSize(getResources().getDimension(R.dimen.profileIncidentTimeTextSize));
+    		incidentTime.setTextSize(incidentTimeTextSize);
     		incidentTime.setLayoutParams(incidentTimeLayoutParams);
     		profileActivityRelativeLayout.addView(incidentTime);
     		
@@ -185,12 +248,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     			incidentTextLayoutParams.topMargin=18;
     		}*/
     		incidentTextLayoutParams.addRule(RelativeLayout.BELOW,incidentTime.getId());
-    		int incidentTextLayoutParamsTopMargin=7;
     		incidentTextLayoutParams.topMargin=incidentTextLayoutParamsTopMargin;
-    		incidentTextLayoutParams.leftMargin=getResources().getDimensionPixelSize(R.dimen.sideMargin);
-    		incidentTextLayoutParams.rightMargin=getResources().getDimensionPixelSize(R.dimen.sideMargin);
+    		incidentTextLayoutParams.leftMargin=incidentTextSideMargin;
+    		incidentTextLayoutParams.rightMargin=incidentTextSideMargin;
     		incidentText.setTextColor(getResources().getColor(R.color.normalTextColor));
-    		incidentText.setTextSize(getResources().getDimension(R.dimen.profileIncidentTextSize));
+    		incidentText.setTextSize(incidentTextSize);
     		incidentText.setLayoutParams(incidentTextLayoutParams);
     		profileActivityRelativeLayout.addView(incidentText);
     		
@@ -225,6 +287,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		protected String[][] doInBackground(Integer... params) 
 		{
 			String[][] incidents=charazaData.getIncidents(profileId);
+			//Log.d("incidents", "incidents fetched "+String.valueOf(incidents.length));
 			return incidents;
 		}
 
