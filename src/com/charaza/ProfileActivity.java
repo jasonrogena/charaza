@@ -17,26 +17,29 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class ProfileActivity extends SherlockActivity implements View.OnClickListener, ISideNavigationCallback
+public class ProfileActivity extends SherlockActivity implements View.OnClickListener, ISideNavigationCallback, View.OnTouchListener
 {
 	private SideNavigationView sideNavigationView;
 	private RelativeLayout profileActivityRelativeLayout;
 	private ScrollView profileActivityScrollView;
+	private RelativeLayout profileActivityMainLayout;
 	
 	private CharazaData charazaData;
 	private int profileId;
 	private TextView profileActivityName;
 	private TextView profileActivityCharazwad;
 	private TextView profileActivityAliasPost;
-	private ImageButton charazaButton;
+	private Button charazaButton;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
     @SuppressWarnings("deprecation")
 	@Override
@@ -48,6 +51,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         //initialise views
         profileActivityScrollView=(ScrollView)this.findViewById(R.id.profileActivityScrollView);
         profileActivityRelativeLayout=(RelativeLayout)this.findViewById(R.id.profileActivityRelativeLayout);
+        profileActivityMainLayout=(RelativeLayout)this.findViewById(R.id.profileActivityMainLayout);
         int minHeight=0;
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -64,7 +68,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         {
         	minHeight=display.getHeight()-24-34;
         }
-        profileActivityRelativeLayout.setMinimumHeight(minHeight);
+        //profileActivityRelativeLayout.setMinimumHeight(minHeight);
         
         sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_profile_activity);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -76,8 +80,10 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         profileActivityName=(TextView)this.findViewById(R.id.profileActivityName);
         profileActivityCharazwad=(TextView)this.findViewById(R.id.profileActivityCharazwad);
         profileActivityAliasPost=(TextView)this.findViewById(R.id.profileActivityAliasPost);
-        charazaButton=(ImageButton)this.findViewById(R.id.charazaButton);
+        charazaButton=(Button)this.findViewById(R.id.charazaButton);
         charazaButton.setOnClickListener(this);
+        charazaButton.setOnTouchListener(this);
+        profileActivityScrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-charazaButton.getLayoutParams().height));
         
         
         //initialise resources
@@ -345,10 +351,15 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	{
 		if(v==charazaButton)
 		{
-			Intent intent=new Intent(ProfileActivity.this, CharazaActivity.class);
-			charazaData.closeDatabase();
-			startActivity(intent);
+			charazaButtonClicked();
 		}
+	}
+	
+	private void charazaButtonClicked()
+	{
+		Intent intent=new Intent(ProfileActivity.this, CharazaActivity.class);
+		charazaData.closeDatabase();
+		startActivity(intent);
 	}
 
 	@Override
@@ -368,5 +379,30 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 			charazaData.closeDatabase();
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		if(v==charazaButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				charazaButtonClicked();
+			}
+			else
+			{
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
+		}
+		return true;
 	}
 }

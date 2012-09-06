@@ -45,5 +45,5 @@
         android:background="@color/normalButtonBackgroundColor"
         android:text="@string/aliasAddButtonText"
         android:textColor="@color/normalButtonTextColor"
-        android:textSize="17dp"/>
+        android:textSize="@dimen/normalButtonTextSize"/>
 </LinearLayout>
