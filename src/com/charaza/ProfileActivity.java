@@ -322,7 +322,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			setProfile(result[0], result[2],"");// charazaData.getPost(Integer.parseInt(profile[1])));
+			setProfile(result[0], result[2], charazaData.getPost(Integer.parseInt(result[1])));
 			super.onPostExecute(result);
 		}
     	

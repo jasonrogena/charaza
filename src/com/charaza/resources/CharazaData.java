@@ -103,16 +103,17 @@ public class CharazaData implements Serializable
 	public String getPost(int id)
 	{
 		
-		Log.d("post id again", String.valueOf(id).trim());
-		String selection="_id="+String.valueOf(id).trim();
+		Log.d("post id again", String.valueOf(id));
+		String selection="_id="+String.valueOf(id);
 		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.POST_TABLE, new String[] {"text"}, selection, null, null, null, null, null);
-		/*if(result[0][0]==null)
-	    {
-	    	updatePosts();
-	    }*/
-		
-		return result[0][0];
-	    
+		if(result.length>0)
+		{
+			return result[0][0];
+		}
+		else 
+		{
+			return null;
+		}
 	}
 	
 	public String getAliasType(int id)
@@ -126,6 +127,9 @@ public class CharazaData implements Serializable
 	{
 		String selection="_id="+String.valueOf(id);
 		String[][] results=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROFILE_TABLE, new String[] {"name","post","charazwad"}, selection, null, null, null, null, null);
+		Log.d("profile size", String.valueOf(results[0].length));
+		Log.d("profile name", results[0][0]);
+		Log.d("profile type", results[0][1]);
 		return results[0];
 	}
 	

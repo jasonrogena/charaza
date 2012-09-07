@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Serializable
 {
@@ -78,6 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable
 		if(cursor.getCount()!=-1)
 		{
 			String[][] result=new String[cursor.getCount()][columns.length];
+			Log.d("runSelectQuery", "number of rows "+String.valueOf(cursor.getCount()));
 			int c1=0;
 			cursor.moveToFirst();
 			while(c1<cursor.getCount())

@@ -20,7 +20,7 @@
     <dimen name="titleTextLeftMargin">10dp</dimen>
     <dimen name="profileImageWidth">90dp</dimen>
     <dimen name="profileImageHeight">90dp</dimen>
-    <dimen name="profilePostTextSize">12dp</dimen>
+    <dimen name="profilePostTextSize">15dp</dimen>
     <dimen name="profileIncidentTextSize">9dp</dimen>
     <dimen name="profileIncidentTimeTextSize">8dp</dimen>
     <dimen name="normalButtonTextSize">17dp</dimen>
