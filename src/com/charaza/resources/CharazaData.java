@@ -53,8 +53,8 @@ public class CharazaData implements Serializable
 	private DatabaseHelper databaseHelper;
 	private int httpPostTimout=20000;
 	private int httpResponseTimout=20000;
-	public static String baseURL="http://10.0.2.2/~jason/charaza";
-	//public static String baseURL="http://charaza.zxq.net";
+	//public static String baseURL="http://10.0.2.2/~jason/charaza";
+	public static String baseURL="http://charaza.zxq.net";
 
 	public CharazaData(Context context) 
 	{
