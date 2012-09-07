@@ -283,7 +283,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	extraInfoScrollView.post(new Runnable() 
+    	/*extraInfoScrollView.post(new Runnable() 
 		{
 
 	        @Override
@@ -291,7 +291,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	        {
 	        	extraInfoScrollView.fullScroll(ScrollView.FOCUS_UP);
 	        }
-	    });
+	    });*/
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
     	if(this.getCurrentFocus()!=null)
     	{

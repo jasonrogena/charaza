@@ -123,7 +123,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	profileActivityScrollView.post(new Runnable() 
+    	/*profileActivityScrollView.post(new Runnable() 
 		{
 
 	        @Override
@@ -131,7 +131,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	        {
 	        	profileActivityScrollView.fullScroll(ScrollView.FOCUS_UP);
 	        }
-	    });
+	    });*/
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
     	if(this.getCurrentFocus()!=null)
     	{

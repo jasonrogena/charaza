@@ -93,7 +93,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		sideNavigationView.setMenuClickCallback(this);
 		this.setTitle(R.string.ranksSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		sideNavigationView.setMinimumHeight(minHeight);
+		//sideNavigationView.setMinimumHeight(minHeight);
 		
 		ranksTableLayout=(TableLayout)this.findViewById(R.id.ranksTableLayout);
 		
@@ -119,7 +119,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	ranksScrollView.post(new Runnable() 
+    	/*ranksScrollView.post(new Runnable() 
 		{
 
 	        @Override
@@ -127,7 +127,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	        {
 	        	ranksScrollView.fullScroll(ScrollView.FOCUS_UP);
 	        }
-	    });
+	    });*/
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
     	if(this.getCurrentFocus()!=null)
     	{

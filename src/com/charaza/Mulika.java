@@ -114,7 +114,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		sideNavigationView.setMenuClickCallback(this);
 		this.setTitle(R.string.mulikaSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		sideNavigationView.setMinimumHeight(minHeight+5);
+		//sideNavigationView.setMinimumHeight(minHeight+5);
 		
 		extraInfoButton=(ImageButton)this.findViewById(R.id.extraInfoButton);
 		extraInfoButton.setOnClickListener(this);//click events handled by ontouch
@@ -182,7 +182,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	mulikaScrollView.post(new Runnable() 
+    	/*mulikaScrollView.post(new Runnable() 
 		{
 
 	        @Override
@@ -190,7 +190,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	        {
 	        	mulikaScrollView.fullScroll(ScrollView.FOCUS_UP);
 	        }
-	    });
+	    });*/
     	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
     	if(this.getCurrentFocus()!=null)
     	{
@@ -204,7 +204,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			default:
 				return super.onOptionsItemSelected(item);
 		}
-    	nameTextBox.requestFocus();
+    	//nameTextBox.requestFocus();
 		return true;
 	}
     
