@@ -465,6 +465,13 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			editedButton.setText(somethingElseAutoComplete.getText().toString());
 			profile.setAliasAt(clickedAliasButton, somethingElseAutoComplete.getText().toString(), aliasEditText.getText().toString());
 		}
+		
+		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+    	//if(this.getCurrentFocus()!=null)
+    	//{
+    		inputManager.hideSoftInputFromWindow(aliasAddButton.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    	//}
+    	
 		addAliasDialog.dismiss();
 	}
 	
