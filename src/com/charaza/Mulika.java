@@ -210,13 +210,14 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     
     
     
-    /*@Override
+    @Override
     protected void onDestroy ()
     {
+    	Log.d("mulika database", "close database about to be called by onDestroy()");
     	charazaData.closeDatabase();
     	profile.closeDatabase();
     	super.onDestroy();
-    }*/
+    }
 
 	public void setNameSuggestions(String[] names)
     {
@@ -353,7 +354,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 				Toast.makeText(context, "Incident successfully submitted", Toast.LENGTH_LONG).show();
 				Intent intent=new Intent(Mulika.this, Ranks.class);
 				intent.putExtra("networkCheckStatus", networkCheckStatus);
-				charazaData.closeDatabase();
+				//charazaData.closeDatabase();
 				mulikaButton.setClickable(true);
 				startActivity(intent);
 			}
@@ -411,20 +412,34 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		{
 			
 			String[][] profiles=charazaData.getProfiles();
-	        int count=0;
-	        String[] profileNames=new String[profiles.length];
-	        while(count<profiles.length)
-	        {
-	        	profileNames[count]=profiles[count][1];//we want the names only
-	        	count++;
-	        }
-	        return profileNames;
+			if(profiles!=null)
+			{
+				int count=0;
+		        String[] profileNames=new String[profiles.length];
+		        while(count<profiles.length)
+		        {
+		        	profileNames[count]=profiles[count][1];//we want the names only
+		        	count++;
+		        }
+		        return profileNames;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			setNameSuggestions(result);
+			if(result!=null)
+			{
+				setNameSuggestions(result);
+			}
+			else
+			{
+				Log.e("getProfiles()", "getProfiles() retured null probably becuase the database is already closed");
+			}
 			if(splashScreen.isShowing())
 			{
 				splashScreen.dismiss();
@@ -441,14 +456,21 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		protected String[] doInBackground(Integer... params)
 		{
 			String[][] posts=charazaData.getPosts();
-	        int count=0;
-	        String[] postNames=new String[posts.length];
-	        while(count<posts.length)
-	        {
-	        	postNames[count]=posts[count][1];
-	        	count++;
-	        }
-	        return postNames;
+			if(posts!=null)
+			{
+				int count=0;
+		        String[] postNames=new String[posts.length];
+		        while(count<posts.length)
+		        {
+		        	postNames[count]=posts[count][1];
+		        	count++;
+		        }
+		        return postNames;
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		@Override
@@ -461,7 +483,14 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			setPostSuggestions(result);
+			if(result!=null)
+			{
+				setPostSuggestions(result);
+			}
+			else
+			{
+				Log.e("getPosts()", "getPosts() returned null probably because the database is already closed");
+			}
 			if(splashScreen.isShowing())
 			{
 				splashScreen.dismiss();
@@ -535,7 +564,15 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		{
 			Intent intent=new Intent(Mulika.this, Ranks.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			charazaData.closeDatabase();
+			//charazaData.closeDatabase();
+			mulikaButton.setClickable(true);
+			startActivity(intent);
+		}
+		else if(itemId==R.id.latestSideNavigation)
+		{
+			Intent intent=new Intent(Mulika.this, Latest.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			//charazaData.closeDatabase();
 			mulikaButton.setClickable(true);
 			startActivity(intent);
 		}

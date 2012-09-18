@@ -1,5 +1,8 @@
 package com.charaza;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.charaza.resources.CharazaData;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -8,6 +11,7 @@ import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.R;
 import com.devspark.sidenavigation.SideNavigationView;
 
+import java.text.ParseException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -30,7 +34,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class Ranks extends SherlockActivity implements ISideNavigationCallback
+public class Latest extends SherlockActivity implements ISideNavigationCallback
 {
 	//private static final int SWIPE_MIN_DISTANCE=70;//initially 120
 	//private static final int SWIPE_MAX_OFF_PATH=250;
@@ -39,19 +43,20 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	private SideNavigationView sideNavigationView;
 	//private GestureDetector gestureDetector;
 	//protected View.OnTouchListener gestureListener;
-	private ScrollView ranksScrollView;
-	private RelativeLayout ranksRelativeLayout;
-	private TableLayout ranksTableLayout;
+	private ScrollView latestScrollView;
+	private RelativeLayout latestRelativeLayout;
+	private TableLayout latestTableLayout;
 
 	private DisplayMetrics metrics;
 	private CharazaData charazaData;
+	private int numberOfProfiles;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ranks);
+        setContentView(R.layout.latest);
         
         //gesture detection
         /*gestureDetector=new GestureDetector(new MyGestureDetector());
@@ -66,9 +71,9 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		};*/
         
         //initialise of views
-		ranksScrollView=(ScrollView)this.findViewById(R.id.ranksScrollView);
+		latestScrollView=(ScrollView)this.findViewById(R.id.latestScrollView);
 		//ranksScrollView.setOnTouchListener(gestureListener);
-        ranksRelativeLayout=(RelativeLayout)this.findViewById(R.id.ranksRelativeLayout);
+        latestRelativeLayout=(RelativeLayout)this.findViewById(R.id.latestRelativeLayout);
         //ranksRelativeLayout.setOnTouchListener(gestureListener);
         int minHeight=0;
         Display display=this.getWindowManager().getDefaultDisplay();
@@ -86,18 +91,20 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
         {
         	minHeight=display.getHeight()-24-33;
         }
-		ranksRelativeLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
+        Log.d("min height", String.valueOf(minHeight));
+		latestRelativeLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
 		
-		sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_ranks);
+		sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_latest);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
 		sideNavigationView.setMenuClickCallback(this);
-		this.setTitle(R.string.ranksSideNavigationTitle);
+		this.setTitle(R.string.latestSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		//sideNavigationView.setMinimumHeight(minHeight);
 		
-		ranksTableLayout=(TableLayout)this.findViewById(R.id.ranksTableLayout);
+		latestTableLayout=(TableLayout)this.findViewById(R.id.latestTableLayout);
 		
 		//initialise utils
+		numberOfProfiles=20;
 		charazaData=new CharazaData(this);
 		Bundle bundle=this.getIntent().getExtras();
 		if(bundle!=null)
@@ -146,50 +153,19 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     @Override
     protected void onDestroy ()
     {
-    	Log.d("ranks database", "database about to be closed by onDestroy()");
+    	Log.d("latest database","database about to be closed by onDestroy()");
     	charazaData.closeDatabase();
     	super.onDestroy();
     }
     
-    public void addProfiles(String[][] profiles)
+    public void addProfiles(String[][] profiles) throws ParseException  
     {
     	int count=0;
-    	Log.d("rank table", "addprofiles called");
-    	//TODO: replace 20 with the number of rows that will fill the display
-    	while(count<20 || count<profiles.length)
+    	while(count<numberOfProfiles && count<profiles.length)
     	{
-    		int next=0;
-    		int i=0;
-    		while(i<profiles.length&&next<profiles.length)//get the largest charazwad value
-    		{
-    			if(profiles[next][0]!=null)//checks to see if the profile being pointed by next is already a row
-    			{
-    				if(count==profiles.length-1)//next is pointing at the last profile in the array
-    				{
-    					break;
-    				}
-    				else
-    				{
-    					if(profiles[i][0]!=null && Integer.parseInt(profiles[i][3])>=Integer.parseInt(profiles[next][3]))
-            			{
-            				next=i;
-            			}
-    					i++;
-    				}
-    				
-    			}
-    			else
-    			{
-    				next++;
-    			}
-    			
-    		}
-    		if(next==profiles.length)
-    		{
-    			break;
-    		}
+    		//Log.d("addprofiles count", String.valueOf(count));
     		final TableRow tableRow=new TableRow(this);
-    		tableRow.setId(1222+Integer.parseInt(profiles[next][0]));
+    		tableRow.setId(5534+Integer.parseInt(profiles[count][0]));
     		//DisplayMetrics metrics = this.getResources().getDisplayMetrics();
     		//float dp = this.getResources().getDimension(R.dimen.tableRowHeight);
     		//int pixels = (int) (metrics.density * dp + 0.5f);
@@ -221,11 +197,10 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		//dp=this.getResources().getDimension(R.dimen.tableTextSideMargin);
     		//pixels=(int)(metrics.density*dp+0.5f);
     		profileNameLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
-    		profileName.setId(1222+Integer.parseInt(profiles[next][0])+222);
-    		final int profileId=Integer.parseInt(profiles[next][0]);
+    		profileName.setId(5534+Integer.parseInt(profiles[count][0])+222);
+    		final int profileId=Integer.parseInt(profiles[count][0]);
     		Log.d("rank table id", String.valueOf(profileId));
-    		profileName.setText(profiles[next][1]);
-    		Log.d("rank table", profiles[next][1]+profiles[next][3]);
+    		profileName.setText(profiles[count][1]);
     		profileName.setTextSize(tableTextSize);
     		profileName.setTextColor(this.getResources().getColor(R.color.normalTextColor));
     		profileName.setGravity(Gravity.CENTER_VERTICAL);
@@ -233,7 +208,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		tableRow.addView(profileName);
     		
     		final View rowSeparator=new View(this);
-    		rowSeparator.setId(1222+Integer.parseInt(profiles[next][0])+2222);
+    		rowSeparator.setId(5534+Integer.parseInt(profiles[count][0])+2222);
     		//dp=this.getResources().getDimension(R.dimen.tableRowHeight);
     		//pixels = (int) (metrics.density * dp + 0.5f);
     		//dp=this.getResources().getDimension(R.dimen.tableCellSeparatorWidth);
@@ -242,20 +217,37 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		rowSeparator.setBackgroundColor(this.getResources().getColor(R.color.tableSeparatorColor));
     		tableRow.addView(rowSeparator);
     		
-    		final TextView profileCharazwad=new TextView(this);
+    		final TextView profileDate=new TextView(this);
     		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
     		//pixels = (int) (metrics.density * dp + 0.5f);
-    		TableRow.LayoutParams profileCharazwadLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,tableRowHeight);
+    		TableRow.LayoutParams profileDateLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,tableRowHeight);
     		//dp=25f;
     		//pixels=(int)(metrics.density*dp+0.5f);
-    		profileCharazwadLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
-    		profileCharazwad.setId(1222+Integer.parseInt(profiles[next][0])+22222);
-    		profileCharazwad.setText(profiles[next][3]);
-    		profileCharazwad.setTextSize(tableTextSize);
-    		profileCharazwad.setTextColor(this.getResources().getColor(R.color.normalTextColor));
-    		profileCharazwad.setGravity(Gravity.CENTER_VERTICAL);
-    		profileCharazwad.setLayoutParams(profileCharazwadLayoutParams);
-    		tableRow.addView(profileCharazwad);
+    		profileDateLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
+    		profileDate.setId(5534+Integer.parseInt(profiles[count][0])+22222);
+    		
+    		SimpleDateFormat dateFormat=new SimpleDateFormat(charazaData.DATE_FORMAT);
+    		Date date=dateFormat.parse(profiles[count][2]);
+    		Date today=dateFormat.parse(profiles[count][3]);
+    		long dateDifference=(today.getTime()-date.getTime())/86400000;
+    		
+    		if(dateDifference>=0&&dateDifference<1)
+    		{
+    			profileDate.setText("Today");
+    		}
+    		else if(dateDifference>=1&&dateDifference<2)
+    		{
+    			profileDate.setText("Yesterday");
+    		}
+    		else
+    		{
+    			profileDate.setText(String.valueOf(dateDifference)+" days ago");
+    		}
+    		profileDate.setTextSize(tableTextSize);
+    		profileDate.setTextColor(this.getResources().getColor(R.color.normalTextColor));
+    		profileDate.setGravity(Gravity.CENTER_VERTICAL);
+    		profileDate.setLayoutParams(profileDateLayoutParams);
+    		tableRow.addView(profileDate);
     		
     		tableRow.setOnTouchListener(new View.OnTouchListener() 
     		{
@@ -277,7 +269,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 						//profileCharazwad.setTextColor(getResources().getColor(R.color.normalTextColor));
 						//rowSeparator.setBackgroundColor(getResources().getColor(R.color.tableSeparatorColor));
 
-						Intent intent=new Intent(Ranks.this, ProfileActivity.class);
+						Intent intent=new Intent(Latest.this, ProfileActivity.class);
 						intent.putExtra("profileId", profileId);
 						intent.putExtra("networkCheckStatus", networkCheckStatus);
 						startActivity(intent);
@@ -292,8 +284,8 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		
     		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
     		//pixels = (int) (metrics.density * dp + 0.5f);
-    		ranksTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,tableRowHeight));
-    		profiles[next][0]=null;
+    		latestTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,tableRowHeight));
+    		//profiles[next][0]=null;
     		
     		count++;
     	}
@@ -338,20 +330,28 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		@Override
 		protected String[][] doInBackground(Integer... params)
 		{
-			String[][] profiles=charazaData.getProfiles();
+			String[][] profiles=charazaData.getLatestProfiles(numberOfProfiles);
 			return profiles;
 		}
 
 		@Override
 		protected void onPostExecute(String[][] result)
 		{
-			if(result!=null)
+			try 
 			{
-				addProfiles(result);
-			}
-			else
+				if(result!=null)
+				{
+					addProfiles(result);
+				}
+				else
+				{
+					Log.e("getLatestProfile()", "getLatestProfile() returned null");
+				}
+			} 
+			catch (ParseException e) 
 			{
-				Log.e("getProfiles()", "getProfiles() retured null probably becuase the database is already closed");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			super.onPostExecute(result);
 		}
@@ -364,13 +364,15 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	{
 		if(itemId==R.id.mulikaSideNavigation)
 		{
-			Intent intent=new Intent(Ranks.this, Mulika.class);
+			Intent intent=new Intent(Latest.this, Mulika.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			startActivity(intent);
 		}
 		else if(itemId==R.id.ranksSideNavigation)
 		{
-			//TODO: do something
+			Intent intent=new Intent(Latest.this, Ranks.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
 		}
 	}
     

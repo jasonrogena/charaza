@@ -3,6 +3,7 @@ package com.charaza.resources;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ public class CharazaData implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 6481133839431933140L;
+	public static final String DATE_FORMAT="yyyy-MM-dd HH:mm:ss";
 	private Context context;
 	private SQLiteDatabase readableDb;
 	private SQLiteDatabase writableDb;
@@ -72,65 +74,169 @@ public class CharazaData implements Serializable
 	
 	public String[][] getProfiles()
 	{
-		updateProfiles();
-		String[] columns={"_id","name","post","charazwad"};
-		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROFILE_TABLE, columns, null, null, null, null, null, null);
-		return result;
+		if(readableDb.isOpen())
+		{
+			updateProfiles();
+			String[] columns={"_id","name","post","charazwad"};
+			if(readableDb.isOpen())
+			{
+				String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROFILE_TABLE, columns, null, null, null, null, null, null);
+				return result;
+			}
+		}
+		return null;
 	}
 	
 	public String[][] getAliasTypes()
 	{
-		updateAliasTypes();
-		String[] columns={"_id","text"};
-		String[][] results=databaseHelper.runSelectQuery(readableDb, databaseHelper.ALIAS_TYPE_TABLE, columns, null, null, null, null, null, null);
-		return results;
+		if(readableDb.isOpen())
+		{
+			updateAliasTypes();
+			String[] columns={"_id","text"};
+			if(readableDb.isOpen())
+			{
+				String[][] results=databaseHelper.runSelectQuery(readableDb, databaseHelper.ALIAS_TYPE_TABLE, columns, null, null, null, null, null, null);
+				return results;
+			}
+		}
+		return null;
 	}
 	
 	public String[][] getPosts()
 	{
-		updatePosts();
-		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.POST_TABLE, new String[] {"_id","text"}, null, null, null, null, null, null);
-		return result;
+		if(readableDb.isOpen())
+		{
+			updatePosts();
+			if(readableDb.isOpen())
+			{
+				String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.POST_TABLE, new String[] {"_id","text"}, null, null, null, null, null, null);
+				return result;
+			}
+		}
+		return null;
 	}
 	
-	public String[] getLastUpdated()
+	private String[] getLastUpdated()
 	{
-		//TODO: set the logic for fetching the dates with the biggest _id
-		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROPERTIES_TABLE, new String[] {"_id","last_profile_update","last_post_update","last_alias_type_update"},"_id="+String.valueOf(databaseHelper.VERSION) , null, null, null, null, null);
-		return result[0];
+		if(readableDb.isOpen())
+		{
+			//TODO: set the logic for fetching the dates with the biggest _id
+			String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROPERTIES_TABLE, new String[] {"_id","last_profile_update","last_post_update","last_alias_type_update"},"_id="+String.valueOf(databaseHelper.VERSION) , null, null, null, null, null);
+			return result[0];
+		}
+		return null;
 	}
 	
 	public String getPost(int id)
 	{
+		if(readableDb.isOpen())
+		{
+			Log.d("post id again", String.valueOf(id));
+			String selection="_id="+String.valueOf(id);
+			String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.POST_TABLE, new String[] {"text"}, selection, null, null, null, null, null);
+			if(result.length>0)
+			{
+				return result[0][0];
+			}
+			else 
+			{
+				return null;
+			}
+		}
 		
-		Log.d("post id again", String.valueOf(id));
-		String selection="_id="+String.valueOf(id);
-		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.POST_TABLE, new String[] {"text"}, selection, null, null, null, null, null);
-		if(result.length>0)
-		{
-			return result[0][0];
-		}
-		else 
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	public String getAliasType(int id)
 	{
-		String selection="_id="+String.valueOf(id);
-		String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.ALIAS_TYPE_TABLE, new String[] {"text"}, selection, null, null, null, null, null);
-		return result[0][0];
+		if(readableDb.isOpen())
+		{
+			String selection="_id="+String.valueOf(id);
+			String[][] result=databaseHelper.runSelectQuery(readableDb, databaseHelper.ALIAS_TYPE_TABLE, new String[] {"text"}, selection, null, null, null, null, null);
+			return result[0][0];
+		}
+		return null;
 	}
 	
 	public String[] getProfile(int id)
 	{
-		String selection="_id="+String.valueOf(id);
-		String[][] results=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROFILE_TABLE, new String[] {"name","post","charazwad"}, selection, null, null, null, null, null);
-		Log.d("profile size", String.valueOf(results[0].length));
-		Log.d("profile name", results[0][0]);
-		Log.d("profile type", results[0][1]);
-		return results[0];
+		if(readableDb.isOpen())
+		{
+			String selection="_id="+String.valueOf(id);
+			String[][] results=databaseHelper.runSelectQuery(readableDb, databaseHelper.PROFILE_TABLE, new String[] {"name","post","charazwad"}, selection, null, null, null, null, null);
+			Log.d("profile size", String.valueOf(results[0].length));
+			Log.d("profile name", results[0][0]);
+			Log.d("profile type", results[0][1]);
+			return results[0];
+		}
+		return null;
+	}
+	
+	public String[][] getLatestProfiles(final int number)
+	{
+		String[][] profiles=null;
+		//Toast.makeText(context, "connecting to server(for profiles)", Toast.LENGTH_SHORT).show();
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
+		HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
+		HttpClient httpClient=new DefaultHttpClient(httpParameters);
+		HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/getLatestProfiles.php");
+		try
+		{
+			String[] dates=getLastUpdated();//last profile update should be the second item in the array
+			if(dates==null)
+			{
+				dates=new String[1];
+				dates[0]="1";
+				Log.e("getLastUpdated()", "getLastUpdated() returned null probably because the database is already closed");
+			}
+			List<NameValuePair> nameValuePairs=new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("_id", dates[0]));
+			nameValuePairs.add(new BasicNameValuePair("number", String.valueOf(number)));
+			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			HttpResponse httpResponse=httpClient.execute(httpPost);
+			if(httpResponse.getStatusLine().getStatusCode()==200)
+			{
+				HttpEntity httpEntity=httpResponse.getEntity();
+				if(httpEntity!=null)
+				{
+					//Toast.makeText(context, "response gotten(for profiles)", Toast.LENGTH_SHORT).show();
+					InputStream inputStream=httpEntity.getContent();
+					String responseString=convertStreamToString(inputStream);
+					if(!responseString.contains("upt0d@te"))
+					{
+						JSONArray jsonArray=new JSONArray(responseString);
+						JSONObject jsonObject=new JSONObject();
+						profiles=new String[jsonArray.length()][4];
+						int count=0;
+						while(count<jsonArray.length())//while((jsonObject=jsonArray.getJSONObject(count))!=null)
+						{
+							jsonObject=jsonArray.getJSONObject(count);
+							profiles[count][0]=jsonObject.getString("_id");
+							profiles[count][1]=jsonObject.getString("name");
+							profiles[count][2]=jsonObject.getString("dateUpdated");
+							profiles[count][3]=jsonObject.getString("now");
+							count++;
+						}
+						//Toast.makeText(context, "updating time", Toast.LENGTH_SHORT).show();
+					}
+					else
+					{
+						//Toast.makeText(context, "database up to date", Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
+			else
+			{
+				Log.d("network connection error", "a code other than 200 has been parsed from the server");
+			}
+		}
+		catch (Exception e) 
+		{
+			// TODO: handle exception
+		}
+		return profiles;
 	}
 	
 	public String[][] getIncidents(int profile)
@@ -145,6 +251,12 @@ public class CharazaData implements Serializable
 			try
 			{
 				String[] dates=getLastUpdated();
+				if(dates==null)
+				{
+					dates=new String[1];
+					dates[0]="1";
+					Log.e("getLastUpdated()", "getLastUpdated() returned null probably because the database is closed");
+				}
 				List<NameValuePair> nameValuePairs=new ArrayList<NameValuePair>(2);
 				nameValuePairs.add(new BasicNameValuePair("_id", dates[0]));
 				nameValuePairs.add(new BasicNameValuePair("profile", String.valueOf(profile)));
@@ -248,7 +360,7 @@ public class CharazaData implements Serializable
 		return false;
 	}
 	
-	public void updateProfiles()
+	private void updateProfiles()
 	{
 		if(checkNetworkConnection())
 		{
@@ -361,7 +473,7 @@ public class CharazaData implements Serializable
 		alertDialog.show();
 	}
 	
-	public void updatePosts()
+	private void updatePosts()
 	{
 		if(checkNetworkConnection())
 		{
@@ -436,7 +548,7 @@ public class CharazaData implements Serializable
 		}
 	}
 	
-	public void updateAliasTypes()
+	private void updateAliasTypes()
 	{
 
 		if(checkNetworkConnection())
@@ -543,7 +655,7 @@ public class CharazaData implements Serializable
 	private void updateDatabaseTime(String column)
 	{
 		//String time=String.valueOf(System.currentTimeMillis());//milliseconds since jan 1st 1970
-		DateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df=new SimpleDateFormat(DATE_FORMAT);
 		df.setTimeZone(TimeZone.getTimeZone("gmt"));
 		String gmtTime = df.format(new Date());
 		databaseHelper.runQuery(writableDb, "UPDATE "+databaseHelper.PROPERTIES_TABLE+" SET "+column+"=\""+gmtTime+"\" WHERE _id=\""+String.valueOf(DatabaseHelper.VERSION)+"\"");

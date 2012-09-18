@@ -33,4 +33,8 @@
     <string name="doneButtonText">Done</string>
     <string name="aliasAddButtonText">Okay</string>
     <string name="charazaButtonText">Charaza</string>
+    <string name="title_activity_latest">Latest</string>
+    <string name="latestNameHeadingText">Name</string>
+    <string name="latestTimeHeadingText">Time</string>
+
 </resources>

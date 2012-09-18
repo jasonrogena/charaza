@@ -18,6 +18,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -263,22 +264,6 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		somethingElseAutoComplete.setText(profile.getAliasTypeAt(newButton.getId()-325));
 		addAliasDialog.show();
     }
-    
-    /*@Override
-    protected void onDestroy ()
-    {
-    	charazaData.closeDatabase();
-    	profile.closeDatabase();
-    	super.onDestroy();
-    }
-    
-    @Override
-	protected void onPause() 
-    {
-    	charazaData.closeDatabase();
-    	profile.closeDatabase();
-		super.onPause();
-	}*/
 
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
@@ -527,18 +512,32 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		protected String[] doInBackground(Integer... params)
 		{
 			aliasTypes=charazaData.getAliasTypes();
-			String[] aliasTypesText=new String[aliasTypes.length+1];
-			for(int i=0;i<aliasTypes.length;i++)
+			if(aliasTypes!=null)
 			{
-				aliasTypesText[i]=aliasTypes[i][1];
+				String[] aliasTypesText=new String[aliasTypes.length+1];
+				for(int i=0;i<aliasTypes.length;i++)
+				{
+					aliasTypesText[i]=aliasTypes[i][1];
+				}
+				return aliasTypesText;
 			}
-			return aliasTypesText;
+			else
+			{
+				return null;
+			}
 		}
 
 		@Override
 		protected void onPostExecute(String[] result) 
 		{
-			setArrayAdapter(result);
+			if(result!=null)
+			{
+				setArrayAdapter(result);
+			}
+			else
+			{
+				Log.e("getAliasTypes()", "getAliasTypes() returned null probably because the database is already closed");
+			}
 			if(aliasTypeDialog.isShowing())
 			{
 				aliasTypeDialog.dismiss();
@@ -559,7 +558,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		{
 			Intent intent=new Intent(ExtraInfo.this, Ranks.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			charazaData.closeDatabase();
+			//charazaData.closeDatabase();
 			startActivity(intent);
 		}
 	}

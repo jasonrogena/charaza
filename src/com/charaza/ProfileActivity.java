@@ -109,16 +109,17 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     @Override
     protected void onDestroy ()
     {
+    	Log.d("profileActivity database", "database about to be closed by onDestroy()");
     	charazaData.closeDatabase();
     	super.onDestroy();
     }
     
-    @Override
+    /*@Override
 	protected void onPause() 
     {
     	charazaData.closeDatabase();
 		super.onPause();
-	}
+	}*/
 
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) 
@@ -151,6 +152,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     {
     	profileActivityName.setText(name);
     	profileActivityCharazwad.setText(charazwad);
+    	//Log.d("profile post", post);
     	profileActivityAliasPost.setText(post);
     }
     
@@ -304,6 +306,10 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 			{
 				addIncidents(result);
 			}
+			else
+			{
+				Log.e("getIncidents()", "getIncidents() returned null");
+			}
 			super.onPostExecute(result);
 		}
     	
@@ -322,7 +328,14 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		@Override
 		protected void onPostExecute(String[] result)
 		{
-			setProfile(result[0], result[2], charazaData.getPost(Integer.parseInt(result[1])));
+			if(result!=null)
+			{
+				setProfile(result[0], result[2], charazaData.getPost(Integer.parseInt(result[1])));
+			}
+			else
+			{
+				Log.e("getProfile()", "getProfile() returned null");
+			}
 			super.onPostExecute(result);
 		}
     	
@@ -358,7 +371,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	private void charazaButtonClicked()
 	{
 		Intent intent=new Intent(ProfileActivity.this, CharazaActivity.class);
-		charazaData.closeDatabase();
+		//charazaData.closeDatabase();
 		startActivity(intent);
 	}
 
@@ -369,14 +382,14 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		{
 			Intent intent=new Intent(ProfileActivity.this, Mulika.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			charazaData.closeDatabase();
+			//charazaData.closeDatabase();
 			startActivity(intent);
 		}
 		else if(itemId==R.id.ranksSideNavigation)
 		{
 			Intent intent=new Intent(ProfileActivity.this, Ranks.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
-			charazaData.closeDatabase();
+			//charazaData.closeDatabase();
 			startActivity(intent);
 		}
 	}
