@@ -91,7 +91,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+        if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+        {
+        	minHeight=display.getHeight()-146;//TODO: check for the height of the bottom button (not checked previously)
+        }
+        else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
         {
         	minHeight=display.getHeight()-48-67;
         }
@@ -102,6 +106,10 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
         {
         	minHeight=display.getHeight()-24-34;
+        }
+        else
+        {
+        	minHeight=display.getHeight()-146;
         }
         //extraInfoMainLayout.setMinimumHeight(minHeight);
 		

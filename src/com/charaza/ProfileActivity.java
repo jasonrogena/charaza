@@ -58,7 +58,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+        if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+        {
+        	minHeight=display.getHeight()-150;
+        }
+        else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
         {
         	minHeight=display.getHeight()-48-67;
         }
@@ -69,6 +73,10 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
         {
         	minHeight=display.getHeight()-24-34;
+        }
+        else
+        {
+        	minHeight=display.getHeight()-150;
         }
         profileActivityRelativeLayout.setMinimumHeight(minHeight);
         
@@ -188,7 +196,23 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
             int incidentTextLayoutParamsTopMargin=0;
             int incidentTextSideMargin=0;
             int incidentTextSize=0;
-            if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+            if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+            {
+            	if(count==0)
+            	{
+            		incidentTimeLayoutParamsTopMargin = 40; 
+            	}
+            	else
+            	{
+            		incidentTimeLayoutParamsTopMargin = 32; 
+            	}
+            	incidentTimeSideMargin=13;
+            	incidentTimeTextSize=13;
+            	incidentTextLayoutParamsTopMargin=7;
+            	incidentTextSideMargin=14;
+            	incidentTextSize=15;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
             {
             	if(count==0)
             	{
@@ -235,6 +259,22 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
             	incidentTextLayoutParamsTopMargin=6;
             	incidentTextSideMargin=7;
             	incidentTextSize=14;
+            }
+            else
+            {
+            	if(count==0)
+            	{
+            		incidentTimeLayoutParamsTopMargin = 40; 
+            	}
+            	else
+            	{
+            		incidentTimeLayoutParamsTopMargin = 32; 
+            	}
+            	incidentTimeSideMargin=13;
+            	incidentTimeTextSize=13;
+            	incidentTextLayoutParamsTopMargin=7;
+            	incidentTextSideMargin=14;
+            	incidentTextSize=15;
             }
     		incidentTimeLayoutParams.topMargin=incidentTimeLayoutParamsTopMargin;
     		incidentTimeLayoutParams.leftMargin=incidentTimeSideMargin;

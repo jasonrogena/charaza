@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,10 +31,12 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Latest extends SherlockActivity implements ISideNavigationCallback
 {
@@ -81,7 +84,11 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
         Display display=this.getWindowManager().getDefaultDisplay();
         metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+        if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+        {
+        	minHeight=display.getHeight()-146;
+        }
+        else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
         {
         	minHeight=display.getHeight()-48-67;
         }
@@ -93,7 +100,10 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
         {
         	minHeight=display.getHeight()-24-33;
         }
-        Log.d("min height", String.valueOf(minHeight));
+        else
+        {
+        	minHeight=display.getHeight()-146;
+        }
 		latestRelativeLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
 		
 		sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_latest);
@@ -124,6 +134,17 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		//fetch network data
 		new GetProfilesThread().execute(0);
 		latestProgressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+        	this.moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
     
     @Override
@@ -175,7 +196,13 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
     		int tableRowHeight=0;//20dp
     		int tableTextSideMargin=0;//4dp
     		int tableTextSize=0;//14dp
-    		if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+    		if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+    		{
+    			tableRowHeight=58;//initially 30
+    			tableTextSideMargin=14;//initially 6
+    			tableTextSize=16;//initially 21
+    		}
+    		else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
     		{
     			tableRowHeight=44;//initially 30
     			tableTextSideMargin=14;//initially 6
@@ -192,6 +219,12 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
     			tableRowHeight=20;//initially 15
     			tableTextSideMargin=6;//initially 3
     			tableTextSize=15;//initially 11
+    		}
+    		else
+    		{
+    			tableRowHeight=58;//initially 30
+    			tableTextSideMargin=14;//initially 6
+    			tableTextSize=16;//initially 21
     		}
     		tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,tableRowHeight));
     		

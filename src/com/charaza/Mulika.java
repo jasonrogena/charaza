@@ -96,7 +96,11 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+        if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+        {
+        	minHeight=display.getHeight()-146;
+        }
+        else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
         {
         	minHeight=display.getHeight()-48-67;
         }
@@ -108,7 +112,11 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         {
         	minHeight=display.getHeight()-24-34;
         }
-		mulikaLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
+        else
+        {
+        	minHeight=display.getHeight()-146;
+        }
+		//mulikaLayout.setMinimumHeight(minHeight);//API level 8-12 require getHeight()
 		
 		sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_mulika);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
