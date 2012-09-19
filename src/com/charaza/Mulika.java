@@ -61,6 +61,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private Dialog splashScreen;
 	private Bitmap extraInfoButtonUnclickedImage;
 	private Bitmap extraInfoButtonClickedImage;
+	private Bitmap mulikaButtonUnclickedImage;
+	private Bitmap mulikaButtonClickedImage;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
 	@SuppressWarnings("deprecation")
 	@Override
@@ -171,6 +173,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			{
 				extraInfoButtonClickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.plus_clicked);
 				extraInfoButtonUnclickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.plus);
+				mulikaButtonClickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.mulika_selected);
+				mulikaButtonUnclickedImage=BitmapFactory.decodeResource(getResources(), R.drawable.mulika);
 			}
 		});
 		thread.run();
@@ -340,6 +344,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 					thread.run();
 					Intent intent=new Intent(Mulika.this, Ranks.class);
 					startActivity(intent);*/
+					mulikaButton.setImageBitmap(mulikaButtonClickedImage);
 					mulikaButton.setClickable(false);
 					new PostIncidentThread().execute(0);
 				}
@@ -373,11 +378,13 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 				Intent intent=new Intent(Mulika.this, Ranks.class);
 				intent.putExtra("networkCheckStatus", networkCheckStatus);
 				//charazaData.closeDatabase();
+				mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
 				mulikaButton.setClickable(true);
 				startActivity(intent);
 			}
 			else
 			{
+				mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
 				mulikaButton.setClickable(true);
 				Toast.makeText(context, "Something went wrong! Try resending", Toast.LENGTH_LONG).show();
 			}
@@ -583,6 +590,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			Intent intent=new Intent(Mulika.this, Ranks.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			//charazaData.closeDatabase();
+			mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
 			mulikaButton.setClickable(true);
 			startActivity(intent);
 		}
@@ -591,6 +599,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			Intent intent=new Intent(Mulika.this, Latest.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			//charazaData.closeDatabase();
+			mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
 			mulikaButton.setClickable(true);
 			startActivity(intent);
 		}

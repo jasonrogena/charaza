@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/mulikaSideNavigation"
-        android:icon="@drawable/found"
+        android:icon="@drawable/action_mulika"
         android:title="@string/mulikaSideNavigationTitle"/>
     <item
         android:id="@+id/ranksSideNavigation"
@@ -13,12 +13,16 @@
         android:id="@+id/latestSideNavigation"
         android:icon="@drawable/today"
         android:title="@string/latestSideNavigationTitle"/>
-    <item
+    <!-- <item
         android:id="@+id/settingsSideNavigation"
         android:icon="@drawable/action_settings"
-        android:title="@string/settingsSideNavigationTitle"/>
+        android:title="@string/settingsSideNavigationTitle"/> -->
     <item
         android:id="@+id/helpSideNavigation"
         android:icon="@drawable/action_help"
         android:title="@string/helpSideNavigationTitle"/>
+    <item
+        android:id="@+id/aboutSideNavigation"
+        android:icon="@drawable/action_about"
+        android:title="@string/aboutSideNavigationTitle"/>
 </menu>

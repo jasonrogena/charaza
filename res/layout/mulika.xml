@@ -158,13 +158,15 @@
 		    <ImageButton 
 		        android:id="@id/mulikaButton"
 		        android:contentDescription="@string/mulikaButtonContentDescription"
-		        android:layout_width="75dp"
-		        android:layout_height="75dp"
+		        android:layout_width="120dp"
+		        android:layout_height="120dp"
 		        android:layout_below="@id/details"
 		        android:layout_marginTop="@dimen/fromUnrelatedViewVMargin"
 		        android:layout_centerHorizontal="true"
 		        android:layout_marginBottom="@dimen/fromUnrelatedViewVMargin"
-		        android:nextFocusUp="@id/details"/>
+		        android:nextFocusUp="@id/details"
+		        android:background="@color/extraInfoOutOfFocusColor"
+		        android:src="@drawable/mulika"/>
 		    
 		</RelativeLayout>
 		

@@ -30,6 +30,7 @@
     <string name="latestSideNavigationTitle">Latest</string>
     <string name="settingsSideNavigationTitle">Settings</string>
     <string name="helpSideNavigationTitle">Help</string>
+    <string name="aboutSideNavigationTitle">About</string>
     <string name="doneButtonText">Done</string>
     <string name="aliasAddButtonText">Okay</string>
     <string name="charazaButtonText">Charaza</string>
