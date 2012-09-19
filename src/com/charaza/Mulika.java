@@ -19,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -208,7 +209,16 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		return true;
 	}
     
-    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+        	this.moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     
     @Override
     protected void onDestroy ()

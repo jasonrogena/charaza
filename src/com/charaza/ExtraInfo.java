@@ -566,6 +566,12 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			//charazaData.closeDatabase();
 			startActivity(intent);
 		}
+		else if(itemId==R.id.latestSideNavigation)
+		{
+			Intent intent=new Intent(ExtraInfo.this, Latest.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
 
 	@Override

@@ -396,6 +396,12 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 			//charazaData.closeDatabase();
 			startActivity(intent);
 		}
+		else if(itemId==R.id.latestSideNavigation)
+		{
+			Intent intent=new Intent(ProfileActivity.this, Latest.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
 
 	@Override

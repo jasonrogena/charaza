@@ -376,6 +376,12 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		{
 			//TODO: do something
 		}
+		else if(itemId==R.id.latestSideNavigation)
+		{
+			Intent intent=new Intent(Ranks.this, Latest.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
     
     /*private class Initializer implements Runnable
