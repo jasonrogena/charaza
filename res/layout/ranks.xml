@@ -12,6 +12,13 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="@color/layoutColor">
+			<ProgressBar 
+			    android:id="@+id/ranksProgressBar"
+			    android:layout_centerInParent="true"
+			    android:layout_width="30dp"
+			    android:layout_height="30dp"
+			    android:layout_gravity="center_vertical|center_horizontal"
+			    android:visibility="gone"/>
 			<!--  <View 
 			    android:layout_width="fill_parent"
 		      	android:layout_height="@dimen/activityTitleHeight"
@@ -42,6 +49,7 @@
 			    android:background="@color/scrollerColor"
 			    android:layout_below="@id/ranksTitleSeperator"
 			    android:visibility="gone"/>-->
+			    
 			<TableLayout 
 			    android:id="@+id/ranksTableLayout"
 			    android:layout_width="fill_parent"

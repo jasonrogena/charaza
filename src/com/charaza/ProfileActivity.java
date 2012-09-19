@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageButton;
@@ -33,6 +34,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	private RelativeLayout profileActivityRelativeLayout;
 	private ScrollView profileActivityScrollView;
 	private RelativeLayout profileActivityMainLayout;
+	private ProgressBar profileActivityProgressBar;
 	
 	private CharazaData charazaData;
 	private int profileId;
@@ -68,7 +70,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         {
         	minHeight=display.getHeight()-24-34;
         }
-        //profileActivityRelativeLayout.setMinimumHeight(minHeight);
+        profileActivityRelativeLayout.setMinimumHeight(minHeight);
         
         sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_profile_activity);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -84,7 +86,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         charazaButton.setOnClickListener(this);
         charazaButton.setOnTouchListener(this);
         profileActivityScrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-charazaButton.getLayoutParams().height));
-        
+        profileActivityProgressBar=(ProgressBar)this.findViewById(R.id.profileActivityProgressBar);
         
         //initialise resources
         charazaData=new CharazaData(this);
@@ -104,6 +106,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         //thread.run();
         new GetProfileThread().execute(0);
         new GetIncidentsThread().execute(0);
+        profileActivityProgressBar.setVisibility(ProgressBar.VISIBLE);
     }
     
     @Override
@@ -304,6 +307,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		{
 			if(result!=null)
 			{
+				profileActivityProgressBar.setVisibility(ProgressBar.GONE);
 				addIncidents(result);
 			}
 			else

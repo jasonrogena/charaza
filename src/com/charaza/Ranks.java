@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -42,6 +43,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	private ScrollView ranksScrollView;
 	private RelativeLayout ranksRelativeLayout;
 	private TableLayout ranksTableLayout;
+	private ProgressBar ranksProgressBar;
 
 	private DisplayMetrics metrics;
 	private CharazaData charazaData;
@@ -94,7 +96,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		this.setTitle(R.string.ranksSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		//sideNavigationView.setMinimumHeight(minHeight);
-		
+		ranksProgressBar=(ProgressBar)this.findViewById(R.id.ranksProgressBar);
 		ranksTableLayout=(TableLayout)this.findViewById(R.id.ranksTableLayout);
 		
 		//initialise utils
@@ -113,6 +115,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
         }
 		
 		//fetch network data
+        ranksProgressBar.setVisibility(ProgressBar.VISIBLE);
 		new GetProfilesThread().execute(0);
     }
     
@@ -347,6 +350,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		{
 			if(result!=null)
 			{
+				ranksProgressBar.setVisibility(ProgressBar.GONE);
 				addProfiles(result);
 			}
 			else

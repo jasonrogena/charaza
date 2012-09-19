@@ -41,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -72,6 +73,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private RelativeLayout extraInfoMainLayout;
 	private ScrollView extraInfoScrollView;
 	private Context context;
+	private ProgressBar aliasTypeProgressBar;
 	private int addedAliasButtonTextSize;
 	private int clickedAliasButton;
     @SuppressWarnings("deprecation")
@@ -121,6 +123,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		
 		aliasTypeDialog=new Dialog(this);
 		aliasTypeDialog.setContentView(R.layout.alias_type_popup);
+		aliasTypeProgressBar=(ProgressBar)aliasTypeDialog.findViewById(R.id.aliasTypeProgressBar);
 		
 		addAliasDialog=new Dialog(this);
 		addAliasDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -244,6 +247,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
         //Thread thread=new Thread(new Initializer());
       	//thread.run();
 		new GetAliasTypesThread().execute(0);
+		aliasTypeProgressBar.setVisibility(ProgressBar.VISIBLE);
 		
 		//check network connection
       	if(!charazaData.checkNetworkConnection() && networkCheckStatus==0)
@@ -532,6 +536,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		{
 			if(result!=null)
 			{
+				aliasTypeProgressBar.setVisibility(ProgressBar.GONE);
 				setArrayAdapter(result);
 			}
 			else

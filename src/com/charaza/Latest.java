@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -46,6 +47,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 	private ScrollView latestScrollView;
 	private RelativeLayout latestRelativeLayout;
 	private TableLayout latestTableLayout;
+	private ProgressBar latestProgressBar;
 
 	private DisplayMetrics metrics;
 	private CharazaData charazaData;
@@ -100,7 +102,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		this.setTitle(R.string.latestSideNavigationTitle);
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		//sideNavigationView.setMinimumHeight(minHeight);
-		
+		latestProgressBar=(ProgressBar)this.findViewById(R.id.latestProgressBar);
 		latestTableLayout=(TableLayout)this.findViewById(R.id.latestTableLayout);
 		
 		//initialise utils
@@ -121,6 +123,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		
 		//fetch network data
 		new GetProfilesThread().execute(0);
+		latestProgressBar.setVisibility(ProgressBar.VISIBLE);
     }
     
     @Override
@@ -223,7 +226,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
     		TableRow.LayoutParams profileDateLayoutParams=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,tableRowHeight);
     		//dp=25f;
     		//pixels=(int)(metrics.density*dp+0.5f);
-    		profileDateLayoutParams.setMargins(tableTextSideMargin, 0, 0, 0);//TODO: set left margin to 4dp
+    		profileDateLayoutParams.setMargins(tableTextSideMargin, 0,tableTextSideMargin,0);
     		profileDate.setId(5534+Integer.parseInt(profiles[count][0])+22222);
     		
     		SimpleDateFormat dateFormat=new SimpleDateFormat(charazaData.DATE_FORMAT);
@@ -342,6 +345,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 				if(result!=null)
 				{
 					addProfiles(result);
+					latestProgressBar.setVisibility(ProgressBar.GONE);
 				}
 				else
 				{
