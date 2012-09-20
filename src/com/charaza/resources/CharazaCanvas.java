@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 
 import java.lang.System;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -56,7 +57,8 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 	private final int COMMENT_2=6;
 	private final int COMMENT_3=7;
 	private int numberOfSlaps;
-	public CharazaCanvas(Context context)
+	private DisplayMetrics metrics;
+	public CharazaCanvas(Context context,DisplayMetrics metrics)
 	{
 		super(context);
 		
@@ -89,6 +91,8 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 		soundManager.addSound(COMMENT_3, R.raw.comment_3);
 		numberOfSlaps=0;
 		//slapSound=MediaPlayer.create(context, R.raw.slap);
+		this.metrics=metrics;
+		
 	}
 	
 	@Override
@@ -170,20 +174,6 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 		rightSlapXValue=canvasWidth-rightSlapWidth;
 	}
 	
-	private void drawRightSlap(Canvas canvas,int pigFaceWidth)
-	{
-		canvas.drawBitmap(rightSlap, rightSlapXValue, rightSlapYValue, new Paint());
-		rightSlapXValue=rightSlapXValue-10;
-		rightSlapYValue=rightSlapYValue-10;
-		if(rightSlapXValue<=canvasWidth/2)
-		{
-			rightHandTouchedFlag=0;
-			soundManager.playSound(SLAP_SOUND);
-			numberOfSlaps++;
-			playSound();
-		}
-	}
-	
 	private void playSound()
 	{
 		if(numberOfSlaps==2 || numberOfSlaps==11)
@@ -216,19 +206,60 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 		}
 	}
 	
+	private void drawRightSlap(Canvas canvas,int pigFaceWidth)
+	{
+		canvas.drawBitmap(rightSlap, rightSlapXValue, rightSlapYValue, new Paint());
+		rightSlapXValue=rightSlapXValue-10;
+		rightSlapYValue=rightSlapYValue-10;
+		if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM || metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
+		{
+			if(rightSlapXValue<=(canvasWidth/2-15))
+			{
+				rightHandTouchedFlag=0;
+				soundManager.playSound(SLAP_SOUND);
+				numberOfSlaps++;
+				playSound();
+			}
+		}
+		else
+		{
+			if(rightSlapXValue<=(canvasWidth/2)+7)
+			{
+				rightHandTouchedFlag=0;
+				soundManager.playSound(SLAP_SOUND);
+				numberOfSlaps++;
+				playSound();
+			}
+		}
+	}
+	
 	private void drawLeftSlap(Canvas canvas,int pigFaceWidth)
 	{
 		canvas.drawBitmap(leftSlap, leftSlapXValue, leftSlapYValue, new Paint());
 		leftSlapXValue=leftSlapXValue+10;
 		leftSlapYValue=leftSlapYValue-10;
 		Log.d("slaps",String.valueOf(numberOfSlaps));
-		if(leftSlapXValue>=((canvasWidth/2)-(pigFaceWidth/2+12)))
+		if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM || metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
 		{
-			leftHandTouchedFlag=0;
-			//slapSound.start();
-			soundManager.playSound(SLAP_SOUND);
-			numberOfSlaps++;
-			playSound();
+			if(leftSlapXValue>=(((canvasWidth/2)-(pigFaceWidth/2+12))+18))
+			{
+				leftHandTouchedFlag=0;
+				//slapSound.start();
+				soundManager.playSound(SLAP_SOUND);
+				numberOfSlaps++;
+				playSound();
+			}
+		}
+		else
+		{
+			if(leftSlapXValue>=((canvasWidth/2)-(pigFaceWidth/2+12)))
+			{
+				leftHandTouchedFlag=0;
+				//slapSound.start();
+				soundManager.playSound(SLAP_SOUND);
+				numberOfSlaps++;
+				playSound();
+			}
 		}
 	}
 	

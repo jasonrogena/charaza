@@ -6,6 +6,8 @@ import com.charaza.resources.CharazaData;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 
 public class CharazaActivity extends Activity
 {
@@ -15,7 +17,10 @@ public class CharazaActivity extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		canvas=new CharazaCanvas(this);
+		Display display=this.getWindowManager().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		canvas=new CharazaCanvas(this,metrics);
 		this.setContentView(canvas);
 		
 		//initialise resources
