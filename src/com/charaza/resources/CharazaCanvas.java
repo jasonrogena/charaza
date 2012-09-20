@@ -52,6 +52,9 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 	private final int LAUGH_2=2;
 	private final int CRY=3;
 	private final int CRY_2=4;
+	private final int COMMENT_1=5;
+	private final int COMMENT_2=6;
+	private final int COMMENT_3=7;
 	private int numberOfSlaps;
 	public CharazaCanvas(Context context)
 	{
@@ -81,6 +84,9 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 		soundManager.addSound(LAUGH_2, R.raw.laugh2);
 		soundManager.addSound(CRY, R.raw.cry);
 		soundManager.addSound(CRY_2, R.raw.cry2);
+		soundManager.addSound(COMMENT_1, R.raw.comment_1);
+		soundManager.addSound(COMMENT_2, R.raw.comment_2);
+		soundManager.addSound(COMMENT_3, R.raw.comment_3);
 		numberOfSlaps=0;
 		//slapSound=MediaPlayer.create(context, R.raw.slap);
 	}
@@ -113,15 +119,15 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 	private void drawPigFace(Canvas canvas)
 	{
 		int pigFaceWidth=pigFace.getWidth();
-		if(numberOfSlaps<=10)
+		if(numberOfSlaps<=21)
 		{
 			canvas.drawBitmap(pigFace, canvas.getWidth()/2-pigFace.getWidth()/2, (canvas.getHeight()/2-pigFace.getHeight()/2)-pigVerticalCentreOffset, new Paint());
 		}
-		else if(numberOfSlaps>10 && numberOfSlaps<20)
+		else if(numberOfSlaps>21 && numberOfSlaps<27)
 		{
 			canvas.drawBitmap(sadPigFace, canvas.getWidth()/2-sadPigFace.getWidth()/2, (canvas.getHeight()/2-sadPigFace.getHeight()/2)-pigVerticalCentreOffset, new Paint());
 		}
-		else if(numberOfSlaps>=20)
+		else if(numberOfSlaps>=27)
 		{
 			canvas.drawBitmap(reallySadPigFace, canvas.getWidth()/2-reallySadPigFace.getWidth()/2, (canvas.getHeight()/2-reallySadPigFace.getHeight()/2)-pigVerticalCentreOffset, new Paint());
 		}
@@ -174,22 +180,39 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 			rightHandTouchedFlag=0;
 			soundManager.playSound(SLAP_SOUND);
 			numberOfSlaps++;
-			if(numberOfSlaps==1 || numberOfSlaps==6)
-			{
-				soundManager.playSound(LAUGH);
-			}
-			else if(numberOfSlaps==10)
-			{
-				soundManager.playSound(LAUGH_2);
-			}
-			else if(numberOfSlaps==16)
-			{
-				soundManager.playSound(CRY);
-			}
-			else if(numberOfSlaps==22 || numberOfSlaps==26 || numberOfSlaps==31 || numberOfSlaps==36 || numberOfSlaps>40)
-			{
-				soundManager.playSound(CRY_2);
-			}
+			playSound();
+		}
+	}
+	
+	private void playSound()
+	{
+		if(numberOfSlaps==2 || numberOfSlaps==11)
+		{
+			soundManager.playSound(LAUGH);
+		}
+		else if(numberOfSlaps==6)
+		{
+			soundManager.playSound(COMMENT_1);
+		}
+		else if(numberOfSlaps==20)
+		{
+			soundManager.playSound(LAUGH_2);
+		}
+		else if(numberOfSlaps==22)
+		{
+			soundManager.playSound(COMMENT_2);
+		}
+		else if(numberOfSlaps==27)
+		{
+			soundManager.playSound(CRY);
+		}
+		else if(numberOfSlaps==38||(numberOfSlaps>50&&numberOfSlaps%9==0))
+		{
+			soundManager.playSound(CRY_2);
+		}
+		else if(numberOfSlaps==40)
+		{
+			soundManager.playSound(COMMENT_3);
 		}
 	}
 	
@@ -205,22 +228,7 @@ public class CharazaCanvas extends View implements View.OnTouchListener
 			//slapSound.start();
 			soundManager.playSound(SLAP_SOUND);
 			numberOfSlaps++;
-			if(numberOfSlaps==1 || numberOfSlaps==6)
-			{
-				soundManager.playSound(LAUGH);
-			}
-			else if(numberOfSlaps==10)
-			{
-				soundManager.playSound(LAUGH_2);
-			}
-			else if(numberOfSlaps==16)
-			{
-				soundManager.playSound(CRY);
-			}
-			else if(numberOfSlaps==22 || numberOfSlaps==26 || numberOfSlaps==31 || numberOfSlaps==36 || numberOfSlaps>40)
-			{
-				soundManager.playSound(CRY_2);
-			}
+			playSound();
 		}
 	}
 	

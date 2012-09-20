@@ -1040,11 +1040,14 @@ containing a value of this type.
         public static final int side_navigation_menu=0x7f0d0005;
     }
     public static final class raw {
-        public static final int cry=0x7f050000;
-        public static final int cry2=0x7f050001;
-        public static final int laugh=0x7f050002;
-        public static final int laugh2=0x7f050003;
-        public static final int slap=0x7f050004;
+        public static final int comment_1=0x7f050000;
+        public static final int comment_2=0x7f050001;
+        public static final int comment_3=0x7f050002;
+        public static final int cry=0x7f050003;
+        public static final int cry2=0x7f050004;
+        public static final int laugh=0x7f050005;
+        public static final int laugh2=0x7f050006;
+        public static final int slap=0x7f050007;
     }
     public static final class string {
         public static final int aboutSideNavigationTitle=0x7f0b0028;
