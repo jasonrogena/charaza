@@ -416,6 +416,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	{
 		Intent intent=new Intent(ProfileActivity.this, CharazaActivity.class);
 		//charazaData.closeDatabase();
+		intent.putExtra("profileId", profileId);
 		startActivity(intent);
 	}
 

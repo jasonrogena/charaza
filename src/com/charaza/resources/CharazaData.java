@@ -53,8 +53,8 @@ public class CharazaData implements Serializable
 	private SQLiteDatabase readableDb;
 	private SQLiteDatabase writableDb;
 	private DatabaseHelper databaseHelper;
-	private int httpPostTimout=20000;
-	private int httpResponseTimout=20000;
+	private static int httpPostTimout=20000;
+	private static int httpResponseTimout=20000;
 	//public static String baseURL="http://10.0.2.2/~jason/charaza";
 	public static String baseURL="http://charaza.zxq.net";
 
@@ -620,6 +620,29 @@ public class CharazaData implements Serializable
 		{
 			//networkError();
 		}
+	}
+	
+	public static boolean updateCharazwadValue(int profileId)
+	{
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
+		HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
+		HttpClient httpClient=new DefaultHttpClient(httpParameters);
+		HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/updateCharazwadValue.php");
+		try
+		{
+			List<NameValuePair> data=new ArrayList<NameValuePair>();
+			data.add(new BasicNameValuePair("_id", "1"));
+			data.add(new BasicNameValuePair("profileId", String.valueOf(profileId)));
+			httpPost.setEntity(new UrlEncodedFormEntity(data));
+			httpClient.execute(httpPost);
+			return true;
+		}
+		catch(Exception e)
+		{
+			Log.w("Http connection", "unable to send incident");
+		}
+		return false;
 	}
 	
 	private static String convertStreamToString(InputStream inputStream)
