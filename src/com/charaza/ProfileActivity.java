@@ -27,6 +27,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProfileActivity extends SherlockActivity implements View.OnClickListener, ISideNavigationCallback, View.OnTouchListener
 {
@@ -112,9 +113,16 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         //access server
         //Thread thread=new Thread(new Initialiser());
         //thread.run();
-        new GetProfileThread().execute(0);
+        //new GetProfileThread().execute(0);
         new GetIncidentsThread().execute(0);
         profileActivityProgressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+       super.onResume();
+       new GetProfileThread().execute(0);
     }
     
     @Override

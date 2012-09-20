@@ -25,6 +25,7 @@ public class CharazaActivity extends Activity
 		//add +1 to charazwad value of profile
 		new PostCharazwadThread().execute(0);
 	}
+	
 	private class PostCharazwadThread extends AsyncTask<Integer, Integer, Boolean>
     {
 
