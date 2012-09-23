@@ -37,5 +37,12 @@
     <string name="title_activity_latest">Latest</string>
     <string name="latestNameHeadingText">Name</string>
     <string name="latestTimeHeadingText">Time</string>
+    <string name="title_activity_about">About</string>
+    <string name="appCreditsDescriptionText">Charaza was designed and developed by Jason Rogena (jasonrogena@gmail.com)</string>
+    <string name="appCreditsText">Credits</string>
+    <string name="appVersionDescriptionText">This version is the first to be released to the public and is considered a pre-beta version. Your feedback will be highly appreciated. Please forgive the occasional bug</string>
+    <string name="appversionText">Version 1.0</string>
+    <string name="appNameDescriptionText">Charaza is a croudsourced community policing application whose aim is to whistleblow injustices committed to the Kenyan mwanainchi</string>
+    <string name="appNameText">Charaza</string>
 
 </resources>

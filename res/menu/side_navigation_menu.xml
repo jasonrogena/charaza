@@ -17,10 +17,10 @@
         android:id="@+id/settingsSideNavigation"
         android:icon="@drawable/action_settings"
         android:title="@string/settingsSideNavigationTitle"/> -->
-    <item
+    <!-- <item
         android:id="@+id/helpSideNavigation"
         android:icon="@drawable/action_help"
-        android:title="@string/helpSideNavigationTitle"/>
+        android:title="@string/helpSideNavigationTitle"/> -->
     <item
         android:id="@+id/aboutSideNavigation"
         android:icon="@drawable/action_about"

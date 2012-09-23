@@ -415,6 +415,12 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		{
 			
 		}
+		else if(itemId==R.id.aboutSideNavigation)
+		{
+			Intent intent=new Intent(Latest.this, About.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
     
     /*private class Initializer implements Runnable

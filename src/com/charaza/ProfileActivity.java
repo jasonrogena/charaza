@@ -451,6 +451,12 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			startActivity(intent);
 		}
+		else if(itemId==R.id.aboutSideNavigation)
+		{
+			Intent intent=new Intent(ProfileActivity.this, About.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
 
 	@Override

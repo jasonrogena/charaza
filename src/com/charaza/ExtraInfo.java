@@ -580,6 +580,12 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			startActivity(intent);
 		}
+		else if(itemId==R.id.aboutSideNavigation)
+		{
+			Intent intent=new Intent(ExtraInfo.this, About.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			startActivity(intent);
+		}
 	}
 
 	@Override

@@ -375,7 +375,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			if(result)
 			{
 				Toast.makeText(context, "Incident successfully submitted", Toast.LENGTH_LONG).show();
-				Intent intent=new Intent(Mulika.this, Ranks.class);
+				Intent intent=new Intent(Mulika.this, Latest.class);
 				intent.putExtra("networkCheckStatus", networkCheckStatus);
 				//charazaData.closeDatabase();
 				mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
@@ -597,6 +597,15 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		else if(itemId==R.id.latestSideNavigation)
 		{
 			Intent intent=new Intent(Mulika.this, Latest.class);
+			intent.putExtra("networkCheckStatus", networkCheckStatus);
+			//charazaData.closeDatabase();
+			mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);
+			mulikaButton.setClickable(true);
+			startActivity(intent);
+		}
+		else if(itemId==R.id.aboutSideNavigation)
+		{
+			Intent intent=new Intent(Mulika.this, About.class);
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			//charazaData.closeDatabase();
 			mulikaButton.setImageBitmap(mulikaButtonUnclickedImage);

@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/appNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/appNameText"
+        android:textSize="22dp"
+        android:layout_marginTop="@dimen/fromUnrelatedViewVMargin"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/incidentTimeTextColor" />
+    
+    <TextView 
+        android:id="@+id/appNameDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appNameText"
+        android:text="@string/appNameDescriptionText"
+        android:textSize="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/normalTextColor" />
+    
+    <TextView
+        android:id="@+id/appVersionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appNameDescription"
+        android:text="@string/appversionText"
+        android:textSize="22dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/incidentTimeTextColor" />
+    
+    <TextView 
+        android:id="@+id/appVersionDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appVersionText"
+        android:text="@string/appVersionDescriptionText"
+        android:textSize="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/normalTextColor" />
+    
+    <TextView
+        android:id="@+id/appCreditsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appVersionDescription"
+        android:text="@string/appCreditsText"
+        android:textSize="22dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/incidentTimeTextColor" />
+    
+    <TextView 
+        android:id="@+id/appCreditsDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appCreditsText"
+        android:text="@string/appCreditsDescriptionText"
+        android:textSize="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/sideMargin"
+        android:layout_marginRight="@dimen/sideMargin"
+        android:textColor="@color/normalTextColor" />
+    
+    <com.devspark.sidenavigation.SideNavigationView
+		        android:id="@+id/side_navigation_view_about"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent" /> 
+
+</RelativeLayout>
