@@ -339,6 +339,8 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	
 	private void doneButtonClicked()
 	{
+		doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+		doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 		//profile.setAddedAliases(addedAliases);
 		Intent intent=new Intent(ExtraInfo.this, Mulika.class);
 		intent.putExtra("networkCheckStatus", networkCheckStatus);
@@ -356,6 +358,8 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	
 	private void aliasAddButtonClicked()
 	{
+		aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+		aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 		if(clickedAliasButton==-1)
 		{
 			RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(plus.getWidth(), plus.getHeight());
@@ -604,11 +608,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				doneButtonClicked();
 			}
-			else
+			/*else
 			{
 				doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}
+			}*/
 		}
 		else if(v==plus)
 		{
@@ -639,11 +643,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				aliasAddButtonClicked();
 			}
-			else
+			/*else
 			{
 				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}
+			}*/
 		}
 		return true;
 	}

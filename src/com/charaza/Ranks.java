@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -259,7 +261,15 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		profileName.setId(1222+Integer.parseInt(profiles[next][0])+222);
     		final int profileId=Integer.parseInt(profiles[next][0]);
     		Log.d("rank table id", String.valueOf(profileId));
-    		profileName.setText(profiles[next][1]);
+    		if(profiles[next][1].equals("")||profiles[next][1].equals(null))
+    		{
+    			profileName.setText("Unknown person");
+    		}
+    		else
+    		{
+    			profileName.setText(profiles[next][1]);
+    		}
+    		//profileName.setText(profiles[next][1]);
     		Log.d("rank table", profiles[next][1]+profiles[next][3]);
     		profileName.setTextSize(tableTextSize);
     		profileName.setTextColor(this.getResources().getColor(R.color.normalTextColor));
@@ -327,7 +337,12 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
     		
     		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
     		//pixels = (int) (metrics.density * dp + 0.5f);
+    		Animation showRowAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+			showRowAnimation.setDuration(220);
+			showRowAnimation.setStartOffset(count*220);
     		ranksTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,tableRowHeight));
+    		tableRow.clearAnimation();
+    		tableRow.startAnimation(showRowAnimation);
     		profiles[next][0]=null;
     		
     		count++;

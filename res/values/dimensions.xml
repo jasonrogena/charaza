@@ -24,4 +24,5 @@
     <dimen name="profileIncidentTextSize">9dp</dimen>
     <dimen name="profileIncidentTimeTextSize">8dp</dimen>
     <dimen name="normalButtonTextSize">17dp</dimen>
+    <dimen name="commentButtonHeight">40dp</dimen>
 </resources>

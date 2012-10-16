@@ -169,7 +169,15 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     
     private void setProfile(String name, String charazwad, String post)
     {
-    	profileActivityName.setText(name);
+    	if(name.equals(null)||name.equals(""))
+    	{
+    		profileActivityName.setText("Unknown person");
+    	}
+    	else
+    	{
+    		profileActivityName.setText(name);
+    	}
+    	
     	profileActivityCharazwad.setText(charazwad);
     	//Log.d("profile post", post);
     	profileActivityAliasPost.setText(post);
@@ -313,6 +321,27 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     		incidentText.setTextColor(getResources().getColor(R.color.normalTextColor));
     		incidentText.setTextSize(incidentTextSize);
     		incidentText.setLayoutParams(incidentTextLayoutParams);
+    		final int incidentId=Integer.parseInt(incidents[count][0]);
+    		final String iT=incidents[count][1];
+    		incidentText.setOnTouchListener(new View.OnTouchListener()
+    		{
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					if(event.getAction()==MotionEvent.ACTION_UP)
+					{
+						Intent intent=new Intent(ProfileActivity.this, IncidentActivity.class);
+						//charazaData.closeDatabase();
+						intent.putExtra("networkCheckStatus", networkCheckStatus);
+						intent.putExtra("profileText", profileActivityName.getText().toString());
+						intent.putExtra("incidentId", incidentId);
+						intent.putExtra("incidentText", iT);
+						startActivity(intent);
+					}
+					return true;
+				}
+			});
     		profileActivityRelativeLayout.addView(incidentText);
     		
     		/*View incidentBackground=new View(this);
@@ -422,6 +451,8 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	
 	private void charazaButtonClicked()
 	{
+		charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+		charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 		Intent intent=new Intent(ProfileActivity.this, CharazaActivity.class);
 		//charazaData.closeDatabase();
 		intent.putExtra("profileId", profileId);
@@ -475,11 +506,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				charazaButtonClicked();
 			}
-			else
+			/*else
 			{
 				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}
+			}*/
 		}
 		return true;
 	}
