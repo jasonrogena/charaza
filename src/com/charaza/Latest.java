@@ -57,6 +57,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 	private DisplayMetrics metrics;
 	private CharazaData charazaData;
 	private int numberOfProfiles;
+	private int nameShowAnimationTime;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
     @SuppressWarnings("deprecation")
 	@Override
@@ -119,6 +120,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		
 		//initialise utils
 		numberOfProfiles=20;
+		nameShowAnimationTime=220;
 		charazaData=new CharazaData(this);
 		Bundle bundle=this.getIntent().getExtras();
 		if(bundle!=null)
@@ -331,8 +333,8 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
     		//dp = this.getResources().getDimension(R.dimen.tableRowHeight);
     		//pixels = (int) (metrics.density * dp + 0.5f);
     		Animation showRowAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
-			showRowAnimation.setDuration(220);
-			showRowAnimation.setStartOffset(count*220);
+			showRowAnimation.setDuration(nameShowAnimationTime);
+			showRowAnimation.setStartOffset(count*nameShowAnimationTime);
     		latestTableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,tableRowHeight));
     		tableRow.clearAnimation();
     		tableRow.startAnimation(showRowAnimation);

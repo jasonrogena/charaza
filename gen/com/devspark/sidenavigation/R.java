@@ -9,12 +9,10 @@ package com.devspark.sidenavigation;
 
 public final class R {
     public static final class anim {
-        public static final int hide_comment_button=0x7f040000;
-        public static final int show_comment_button=0x7f040001;
-        public static final int side_navigation_fade_in=0x7f040002;
-        public static final int side_navigation_fade_out=0x7f040003;
-        public static final int side_navigation_in_from_left=0x7f040004;
-        public static final int side_navigation_out_to_left=0x7f040005;
+        public static final int side_navigation_fade_in=0x7f040000;
+        public static final int side_navigation_fade_out=0x7f040001;
+        public static final int side_navigation_in_from_left=0x7f040002;
+        public static final int side_navigation_out_to_left=0x7f040003;
     }
     public static final class attr {
         /**  Specified if we are forcing an action item overflow menu. 

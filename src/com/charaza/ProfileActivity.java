@@ -19,6 +19,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -43,6 +45,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	private TextView profileActivityCharazwad;
 	private TextView profileActivityAliasPost;
 	private Button charazaButton;
+	private int incidentShowAnimationTime;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
     @SuppressWarnings("deprecation")
 	@Override
@@ -98,6 +101,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         profileActivityProgressBar=(ProgressBar)this.findViewById(R.id.profileActivityProgressBar);
         
         //initialise resources
+        incidentShowAnimationTime=180;
         charazaData=new CharazaData(this);
         Bundle bundle=this.getIntent().getExtras();
         this.profileId=bundle.getInt("profileId");
@@ -159,7 +163,8 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     	}
     	switch (item.getItemId()) {
 		case android.R.id.home:
-			sideNavigationView.toggleMenu();
+			this.finish();
+			//sideNavigationView.toggleMenu();
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -299,6 +304,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     		incidentTime.setTextSize(incidentTimeTextSize);
     		incidentTime.setLayoutParams(incidentTimeLayoutParams);
     		profileActivityRelativeLayout.addView(incidentTime);
+    		Animation showTimeAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+			showTimeAnimation.setDuration(incidentShowAnimationTime);
+			showTimeAnimation.setStartOffset(count*incidentShowAnimationTime);
+			incidentTime.clearAnimation();
+			incidentTime.startAnimation(showTimeAnimation);
     		
     		TextView incidentText=new TextView(this);
     		incidentText.setId(4562+count);
@@ -343,6 +353,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 				}
 			});
     		profileActivityRelativeLayout.addView(incidentText);
+    		Animation showIncidentAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+    		showIncidentAnimation.setDuration(incidentShowAnimationTime);
+    		showIncidentAnimation.setStartOffset(count*incidentShowAnimationTime+incidentShowAnimationTime/2);
+			incidentText.clearAnimation();
+			incidentText.startAnimation(showIncidentAnimation);
     		
     		/*View incidentBackground=new View(this);
     		incidentBackground.setId(45532+count);

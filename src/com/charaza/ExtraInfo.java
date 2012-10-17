@@ -296,7 +296,9 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
     	}
     	switch (item.getItemId()) {
 		case android.R.id.home:
-			sideNavigationView.toggleMenu();
+			//sideNavigationView.toggleMenu();
+			//doneButtonClicked();
+			this.finish();
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

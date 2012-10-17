@@ -8,6 +8,7 @@ import com.devspark.sidenavigation.SideNavigationView;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -37,6 +39,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private int incidentId;
 	private String incidentText;
 	private int commentButtonStatus=1;//0 is for hidden
+	private int buttonAnimationTime;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -91,12 +94,32 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		incidentActivityName=(TextView)this.findViewById(R.id.incidentActivityName);
 		
 		previousY=0;
+		buttonAnimationTime=200;
 		Bundle bundle=this.getIntent().getExtras();
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		incidentActivityName.setText(bundle.getString("profileText"));
 		incidentId=bundle.getInt("incidentId");
 		incidentText=bundle.getString("incidentText");
     }
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) 
+    {
+    	InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+    	if(this.getCurrentFocus()!=null)
+    	{
+    		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    	}
+    	switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish();
+			//sideNavigationView.toggleMenu();
+			break;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event)
@@ -158,7 +181,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		if(commentButtonStatus==0)
 		{
 			Animation showButtonAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)1, Animation.RELATIVE_TO_SELF, (float)1);
-			showButtonAnimation.setDuration(200);
+			showButtonAnimation.setDuration(buttonAnimationTime);
 			showButtonAnimation.setAnimationListener(new Animation.AnimationListener() 
 			{
 				
@@ -192,7 +215,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		if(commentButtonStatus==1)
 		{
 			Animation hideButtonAnimation=new ScaleAnimation((float)1, (float)1, (float)1, (float)0, Animation.RELATIVE_TO_SELF, (float)1, Animation.RELATIVE_TO_SELF, (float)1);
-			hideButtonAnimation.setDuration(200);
+			hideButtonAnimation.setDuration(buttonAnimationTime);
 			hideButtonAnimation.setAnimationListener(new Animation.AnimationListener() 
 			{
 				
