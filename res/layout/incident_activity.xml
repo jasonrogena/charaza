@@ -38,6 +38,38 @@
 			    android:textColor="@color/normalTextColor"
 			    android:textStyle="bold"
 			    android:textSize="@dimen/profileNameTextSize"/>
+            <EditText 
+                android:id="@+id/incidentActivityCommentEditText"
+                android:layout_width="fill_parent"
+                android:layout_height="95dp"
+                android:layout_below="@id/incidentActivityName"
+                android:gravity="top"
+                android:layout_marginTop="@dimen/fromRelatedViewVMargin"
+		        android:layout_marginLeft="@dimen/sideMargin"
+		        android:layout_marginRight="@dimen/sideMargin"
+		        android:layout_marginBottom="0dp"
+		        android:textSize="@dimen/normalTextSize"
+		        android:textColor="@color/normalTextColor"
+		        android:autoLink="all"
+		        android:linksClickable="true"
+		        android:scrollbars="vertical"
+		        android:inputType="textCapSentences|textMultiLine|textAutoCorrect"
+		        android:background="@drawable/edit_text"
+		        android:visibility="gone"/>
+            <Button 
+                android:id="@+id/incidentActivityPostCommentButton"
+                android:contentDescription="@string/postCommentButtonContentDescription"
+        		android:layout_height="@dimen/commentButtonHeight"
+        		android:layout_width="match_parent"
+        		android:layout_marginTop="0dp"
+        		android:layout_marginLeft="@dimen/sideMargin"
+		        android:layout_marginRight="@dimen/sideMargin"
+        		android:text="@string/postCommentButtonText"
+        		android:background="@color/aliasButtonBackground"
+       		 	android:textColor="@color/normalTextColor"
+        		android:textSize="@dimen/normalButtonTextSize"
+        		android:layout_below="@id/incidentActivityCommentEditText"
+        		android:visibility="gone"/>
             
 	    </RelativeLayout>
     </ScrollView>

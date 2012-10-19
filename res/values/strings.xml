@@ -16,6 +16,7 @@
     <string name="moreButtonContentDescription">press this button to expand the list</string>
     <string name="charazaButtonContentDescription">press this button to charaza this person</string>
     <string name="commentButtonContentDescription">press this button to comment on this incident</string>
+    <string name="postCommentButtonContentDescription">press this button to post your comment</string>
     <string name="profileActivityDescriptionContentDescription">Profile Image of the culprit</string>
     <string name="ranksSubTitle">Rankings</string>
     <string name="hello_world">Hello world!</string>
@@ -36,6 +37,7 @@
     <string name="aliasAddButtonText">Okay</string>
     <string name="charazaButtonText">Charaza</string>
     <string name="commentButtonText">Comment</string>
+    <string name="postCommentButtonText">Post</string>
     <string name="title_activity_latest">Latest</string>
     <string name="latestNameHeadingText">Name</string>
     <string name="latestTimeHeadingText">Time</string>

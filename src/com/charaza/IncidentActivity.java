@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -27,12 +29,14 @@ import android.widget.Toast;
 public class IncidentActivity extends SherlockActivity implements View.OnClickListener, ISideNavigationCallback, View.OnTouchListener
 {
 	private SideNavigationView sideNavigationView;
-	private ScrollView incidentActivityScrollView;
-	private RelativeLayout incidentActivityRelativeLayout;
-	private RelativeLayout incidentActivityMainLayout;
-	private Button incidentActivityCommentButton;
-	private Button incidentActivityCharazaButton;
+	private ScrollView scrollView;
+	private RelativeLayout relativeLayout;
+	private RelativeLayout mainLayout;
+	private Button commentButton;
+	private Button charazaButton;
 	private TextView incidentActivityName;
+	private EditText commentEditText;
+	private Button postCommentButton;
 	
 	private float previousY;
 	private int networkCheckStatus=0;
@@ -40,16 +44,19 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private String incidentText;
 	private int commentButtonStatus=1;//0 is for hidden
 	private int buttonAnimationTime;
+	private int commentEditTextAnimationTime;
+	private int postCommentButtonAnimationTime;
+	private Context context;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incident_activity);
         
-        incidentActivityMainLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityMainLayout);
-        incidentActivityRelativeLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityRelativeLayout);
-        incidentActivityScrollView=(ScrollView)this.findViewById(R.id.incidentActivityScrollView);
-        incidentActivityScrollView.setOnTouchListener(this);
+        mainLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityMainLayout);
+        relativeLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityRelativeLayout);
+        scrollView=(ScrollView)this.findViewById(R.id.incidentActivityScrollView);
+        scrollView.setOnTouchListener(this);
         int minHeight=0;
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -74,7 +81,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         {
         	minHeight=display.getHeight()-150;
         }
-        incidentActivityRelativeLayout.setMinimumHeight(minHeight);
+        relativeLayout.setMinimumHeight(minHeight);
         
         sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_incident_activity);
 		sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -83,23 +90,30 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		sideNavigationView.setMinimumHeight(minHeight+5);
 		
-		incidentActivityCommentButton=(Button)this.findViewById(R.id.incidentActivityCommentButton);
+		commentButton=(Button)this.findViewById(R.id.incidentActivityCommentButton);
 		//incidentActivityCommentButton.setOnTouchListener(this);
-		incidentActivityCommentButton.setOnClickListener(this);
-		incidentActivityCommentButton.setOnTouchListener(this);
-		incidentActivityCharazaButton=(Button)this.findViewById(R.id.incidentActivityCharazaButton);
-		incidentActivityCharazaButton.setOnTouchListener(this);
-		incidentActivityCharazaButton.setOnClickListener(this);
-		incidentActivityScrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-incidentActivityCharazaButton.getLayoutParams().height-incidentActivityCommentButton.getLayoutParams().height));
+		commentButton.setOnClickListener(this);
+		commentButton.setOnTouchListener(this);
+		charazaButton=(Button)this.findViewById(R.id.incidentActivityCharazaButton);
+		charazaButton.setOnTouchListener(this);
+		charazaButton.setOnClickListener(this);
+		scrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-charazaButton.getLayoutParams().height-commentButton.getLayoutParams().height));
 		incidentActivityName=(TextView)this.findViewById(R.id.incidentActivityName);
+		commentEditText=(EditText)this.findViewById(R.id.incidentActivityCommentEditText);
+		postCommentButton=(Button)this.findViewById(R.id.incidentActivityPostCommentButton);
+		postCommentButton.setOnClickListener(this);
+		postCommentButton.setOnTouchListener(this);
 		
 		previousY=0;
 		buttonAnimationTime=200;
+		commentEditTextAnimationTime=400;
+		postCommentButtonAnimationTime=200;
 		Bundle bundle=this.getIntent().getExtras();
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		incidentActivityName.setText(bundle.getString("profileText"));
 		incidentId=bundle.getInt("incidentId");
 		incidentText=bundle.getString("incidentText");
+		context=this;
     }
     
     @Override
@@ -121,64 +135,204 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		return true;
 	}
 
-	@Override
-	public boolean onTouch(View view, MotionEvent event)
+	
+	
+	private void commentButtonClicked()
 	{
-		if(view==incidentActivityCommentButton)
+		showCommentEditText(buttonAnimationTime);
+		commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+	}
+	
+	private void postCommentButtonClicked()
+	{
+		//hideCommentEditText();
+		hideKeyboard();
+		hidePostCommentButton(0);
+		postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+	}
+	
+	private void charazaButtonClicked()
+	{
+		charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+		charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+	}
+	
+	private void showCommentEditText(int startOffset)
+	{
+		Animation showCommentEditTextAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+		showCommentEditTextAnimation.setDuration(commentEditTextAnimationTime);
+		showCommentEditTextAnimation.setStartOffset(startOffset);
+		showCommentEditTextAnimation.setAnimationListener(new Animation.AnimationListener() 
 		{
-			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			
+			@Override
+			public void onAnimationStart(Animation animation) 
 			{
-				incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
-			}
-			else if(event.getAction()==MotionEvent.ACTION_UP)
-			{
-				incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-				incidentActivityCommentButtonClicked();
-			}
-			/*else
-			{
-				incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-			}*/
-		}
-		else if(view==incidentActivityCharazaButton)
-		{
-			if(event.getAction()==MotionEvent.ACTION_DOWN)
-			{
+				commentEditText.setVisibility(EditText.VISIBLE);
 				hideCommentButton();
-				incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
-				incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
 			}
-			else if(event.getAction()==MotionEvent.ACTION_UP)
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) 
 			{
-				showCommentButton();
-				incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
-				incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-				incidentActivityCharazaButtonClicked();
+				// TODO Auto-generated method stub
+				
 			}
-			/*else
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
 			{
-				showCommentButton();
-				incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
-				incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}*/
-		}
-		return true;
+				commentEditText.requestFocus();
+				showPostCommentButton(0);
+			}
+		});
+		commentEditText.clearAnimation();
+		commentEditText.startAnimation(showCommentEditTextAnimation);
 	}
 	
-	private void incidentActivityCommentButtonClicked()
+	private void showPostCommentButton(int startOffset)
 	{
-		incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+		Animation showPostCommentButtonAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+		showPostCommentButtonAnimation.setDuration(postCommentButtonAnimationTime);
+		showPostCommentButtonAnimation.setStartOffset(startOffset+50);
+		showPostCommentButtonAnimation.setAnimationListener(new Animation.AnimationListener()
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation)
+			{
+				postCommentButton.setVisibility(Button.VISIBLE);	
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		postCommentButton.clearAnimation();
+		postCommentButton.startAnimation(showPostCommentButtonAnimation);
 	}
 	
-	private void incidentActivityCharazaButtonClicked()
+	
+	private void hideCommentEditText(int offset)
 	{
-		incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
-		incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+		//hidePostCommentButton(commentEditTextAnimationTime);
+		Animation hideCommentEditTextAnimation=new ScaleAnimation((float)1, (float)1, (float)1, (float)0, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+		hideCommentEditTextAnimation.setDuration(commentEditTextAnimationTime);
+		hideCommentEditTextAnimation.setStartOffset(offset+100);
+		hideCommentEditTextAnimation.setAnimationListener(new Animation.AnimationListener() 
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation) 
+			{
+				//movePostCommentButton(commentEditTextAnimationTime);
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				commentEditText.setVisibility(EditText.GONE);
+				showCommentButton();
+			}
+		});
+		commentEditText.clearAnimation();
+		commentEditText.startAnimation(hideCommentEditTextAnimation);
+	}
+	
+	/*private void movePostCommentButton(int duration)
+	{
+		Animation movePostCommentButtonAnimation=new TranslateAnimation((float)1, (float)1, (float)0, (float)(commentEditText.getHeight()*0.75));
+		movePostCommentButtonAnimation.setDuration(duration);
+		movePostCommentButtonAnimation.setAnimationListener(new Animation.AnimationListener()
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				hidePostCommentButton(100);
+			}
+		});
+		postCommentButton.clearAnimation();
+		postCommentButton.startAnimation(movePostCommentButtonAnimation);
+	}*/
+	
+	private void hidePostCommentButton(int startOffset)
+	{
+		Animation hidePostCommentButtonAnimation=new ScaleAnimation((float)1, (float)1, (float)1, (float)0, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+		hidePostCommentButtonAnimation.setDuration(postCommentButtonAnimationTime);
+		hidePostCommentButtonAnimation.setStartOffset(startOffset+50);
+		hidePostCommentButtonAnimation.setAnimationListener(new Animation.AnimationListener()
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation)
+			{
+					
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				postCommentButton.setVisibility(Button.GONE);
+				hideCommentEditText(0);
+				//hideKeyboard();
+				//showCommentButton();
+			}
+		});
+		postCommentButton.clearAnimation();
+		postCommentButton.startAnimation(hidePostCommentButtonAnimation);
+	}
+	
+	private void hideKeyboard()
+	{
+		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+    	if(this.getCurrentFocus()!=null)
+    	{
+    		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    	}
 	}
 	
 	private void showCommentButton()
 	{
-		if(commentButtonStatus==0)
+		if(commentButtonStatus==0 && postCommentButton.getVisibility()==Button.GONE)
 		{
 			Animation showButtonAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)1, Animation.RELATIVE_TO_SELF, (float)1);
 			showButtonAnimation.setDuration(buttonAnimationTime);
@@ -188,7 +342,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				@Override
 				public void onAnimationStart(Animation animation) 
 				{
-					incidentActivityCommentButton.setVisibility(Button.VISIBLE);
+					commentButton.setVisibility(Button.VISIBLE);
 				}
 				
 				@Override
@@ -204,8 +358,8 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 					
 				}
 			});
-			incidentActivityCommentButton.clearAnimation();
-			incidentActivityCommentButton.startAnimation(showButtonAnimation);
+			commentButton.clearAnimation();
+			commentButton.startAnimation(showButtonAnimation);
 			commentButtonStatus=1;
 		}
 	}
@@ -236,11 +390,11 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				@Override
 				public void onAnimationEnd(Animation animation) 
 				{
-					incidentActivityCommentButton.setVisibility(Button.GONE);
+					commentButton.setVisibility(Button.GONE);
 				}
 			});
-			incidentActivityCommentButton.clearAnimation();
-			incidentActivityCommentButton.startAnimation(hideButtonAnimation);
+			commentButton.clearAnimation();
+			commentButton.startAnimation(hideButtonAnimation);
 			commentButtonStatus=0;
 		}
 	}
@@ -255,9 +409,65 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	@Override
 	public void onClick(View view) 
 	{
-		if(view==incidentActivityCommentButton)
+		if(view==commentButton)
 		{
 			
 		}
+	}
+	
+	@Override
+	public boolean onTouch(View view, MotionEvent event)
+	{
+		if(view==commentButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+				commentButtonClicked();
+			}
+			/*else
+			{
+				incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			}*/
+		}
+		else if(view==postCommentButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+				postCommentButtonClicked();
+			}
+		}
+		else if(view==charazaButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				hideCommentButton();
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				showCommentButton();
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				charazaButtonClicked();
+			}
+			/*else
+			{
+				showCommentButton();
+				incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}*/
+		}
+		return true;
 	}
 }
