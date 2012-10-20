@@ -310,7 +310,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 			incidentTime.clearAnimation();
 			incidentTime.startAnimation(showTimeAnimation);
     		
-    		TextView incidentText=new TextView(this);
+    		final TextView incidentText=new TextView(this);
     		incidentText.setId(4562+count);
     		incidentText.setText(incidents[count][1]);
     		RelativeLayout.LayoutParams incidentTextLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -341,6 +341,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 				{
 					if(event.getAction()==MotionEvent.ACTION_UP)
 					{
+						incidentText.setTextColor(getResources().getColor(R.color.normalTextColor));
 						Intent intent=new Intent(ProfileActivity.this, IncidentActivity.class);
 						//charazaData.closeDatabase();
 						intent.putExtra("networkCheckStatus", networkCheckStatus);
@@ -348,6 +349,14 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 						intent.putExtra("incidentId", incidentId);
 						intent.putExtra("incidentText", iT);
 						startActivity(intent);
+					}
+					else if(event.getAction()==MotionEvent.ACTION_DOWN)
+					{
+						incidentText.setTextColor(getResources().getColor(R.color.incidentTimeTextColor));
+					}
+					else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+					{
+						incidentText.setTextColor(getResources().getColor(R.color.normalTextColor));
 					}
 					return true;
 				}
@@ -520,6 +529,11 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				charazaButtonClicked();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 			}
 			/*else
 			{

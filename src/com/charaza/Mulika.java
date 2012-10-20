@@ -645,7 +645,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 				
 				extraInfoButtonClicked();
 			}
-			else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
 				extraInfoButton.setImageBitmap(extraInfoButtonUnclickedImage);
 			}

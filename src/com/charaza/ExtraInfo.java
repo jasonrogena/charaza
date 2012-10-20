@@ -217,7 +217,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 							addedAliasButtonClicked(newButton);
 						}
-						else
+						else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 						{
 							newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 						}
@@ -423,7 +423,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 						addedAliasButtonClicked(newButton);
 					}
-					else
+					else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 					{
 						newButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 					}
@@ -610,11 +610,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				doneButtonClicked();
 			}
-			/*else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
 				doneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				doneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}*/
+			}
 		}
 		else if(v==plus)
 		{
@@ -627,7 +627,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				plusClicked();
 			}
-			else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
 				plus.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			}
@@ -645,11 +645,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				aliasAddButtonClicked();
 			}
-			/*else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
 				aliasAddButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				aliasAddButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}*/
+			}
 		}
 		return true;
 	}

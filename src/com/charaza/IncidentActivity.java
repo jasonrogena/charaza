@@ -429,10 +429,10 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				commentButtonClicked();
 			}
-			/*else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
-				incidentActivityCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
-			}*/
+				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			}
 		}
 		else if(view==postCommentButton)
 		{
@@ -444,6 +444,10 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			{
 				postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				postCommentButtonClicked();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			}
 		}
 		else if(view==charazaButton)
@@ -461,12 +465,12 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 				charazaButtonClicked();
 			}
-			/*else
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 			{
 				showCommentButton();
-				incidentActivityCharazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
-				incidentActivityCharazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
-			}*/
+				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
 		}
 		return true;
 	}

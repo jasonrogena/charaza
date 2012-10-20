@@ -322,7 +322,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 						intent.putExtra("networkCheckStatus", networkCheckStatus);
 						startActivity(intent);
 					}
-					else
+					else if(event.getAction()==MotionEvent.ACTION_CANCEL)
 					{
 						tableRow.setBackgroundColor(getResources().getColor(R.color.tableRowColor));
 					}
