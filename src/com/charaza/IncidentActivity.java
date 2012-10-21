@@ -35,13 +35,13 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private Button commentButton;
 	private Button charazaButton;
 	private TextView incidentActivityName;
+	private TextView incidentActivityIncident;
 	private EditText commentEditText;
 	private Button postCommentButton;
 	
 	private float previousY;
 	private int networkCheckStatus=0;
 	private int incidentId;
-	private String incidentText;
 	private int commentButtonStatus=1;//0 is for hidden
 	private int buttonAnimationTime;
 	private int commentEditTextAnimationTime;
@@ -99,6 +99,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		charazaButton.setOnClickListener(this);
 		scrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-charazaButton.getLayoutParams().height-commentButton.getLayoutParams().height));
 		incidentActivityName=(TextView)this.findViewById(R.id.incidentActivityName);
+		incidentActivityIncident=(TextView)this.findViewById(R.id.incidentActivityIncident);
 		commentEditText=(EditText)this.findViewById(R.id.incidentActivityCommentEditText);
 		postCommentButton=(Button)this.findViewById(R.id.incidentActivityPostCommentButton);
 		postCommentButton.setOnClickListener(this);
@@ -111,8 +112,8 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		Bundle bundle=this.getIntent().getExtras();
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		incidentActivityName.setText(bundle.getString("profileText"));
+		incidentActivityIncident.setText(bundle.getString("incidentText"));
 		incidentId=bundle.getInt("incidentId");
-		incidentText=bundle.getString("incidentText");
 		context=this;
     }
     

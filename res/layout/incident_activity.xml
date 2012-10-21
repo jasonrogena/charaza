@@ -38,11 +38,21 @@
 			    android:textColor="@color/normalTextColor"
 			    android:textStyle="bold"
 			    android:textSize="@dimen/profileNameTextSize"/>
+            <TextView 
+			    android:id="@+id/incidentActivityIncident"
+			    android:layout_below="@id/incidentActivityName"
+			    android:layout_marginTop="@dimen/fromRelatedViewVMargin"
+			    android:layout_alignParentLeft="true"
+			    android:layout_marginLeft="@dimen/sideMargin"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textColor="@color/normalTextColor"
+				android:textSize="@dimen/profileNameTextSize"/>
             <EditText 
                 android:id="@+id/incidentActivityCommentEditText"
                 android:layout_width="fill_parent"
                 android:layout_height="95dp"
-                android:layout_below="@id/incidentActivityName"
+                android:layout_below="@id/incidentActivityIncident"
                 android:gravity="top"
                 android:layout_marginTop="@dimen/fromRelatedViewVMargin"
 		        android:layout_marginLeft="@dimen/sideMargin"
