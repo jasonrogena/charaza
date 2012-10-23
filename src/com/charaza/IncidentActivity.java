@@ -1,5 +1,8 @@
 package com.charaza;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
@@ -9,7 +12,9 @@ import com.devspark.sidenavigation.SideNavigationView;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -47,6 +52,9 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private int commentEditTextAnimationTime;
 	private int postCommentButtonAnimationTime;
 	private Context context;
+	private List<TextView> commentTimeList;
+	private List<TextView> commentTextList;
+	private int commentTextShowAnimationTime;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -109,11 +117,14 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		buttonAnimationTime=200;
 		commentEditTextAnimationTime=400;
 		postCommentButtonAnimationTime=200;
+		commentTextShowAnimationTime=180;
 		Bundle bundle=this.getIntent().getExtras();
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		incidentActivityName.setText(bundle.getString("profileText"));
 		incidentActivityIncident.setText(bundle.getString("incidentText"));
 		incidentId=bundle.getInt("incidentId");
+		commentTimeList=new ArrayList<TextView>();
+		commentTextList=new ArrayList<TextView>();
 		context=this;
     }
     
@@ -475,4 +486,149 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		}
 		return true;
 	}
+	
+	public void addIncidents(String[][] comments)
+    {
+    	int count=0;
+    	while(count<comments.length)
+    	{
+    		TextView commentTime=new TextView(this);
+    		commentTime.setId(23542+commentTimeList.size());
+    		commentTime.setText(comments[count][2]);
+    		RelativeLayout.LayoutParams commentTimeLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+    		
+    		if(commentTextList.size()==0)//first comment in the list
+    		{
+    			commentTimeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+    		}
+    		
+    		else
+    		{
+    			commentTimeLayoutParams.addRule(RelativeLayout.BELOW,commentTextList.get(commentTextList.size()-1).getId());//below the last comment text
+    		}
+    		Display display=this.getWindowManager().getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int commentTimeLayoutParamsTopMargin=0;
+            int commentTimeSideMargin=0;
+            int commentTimeTextSize=0;
+            int commentTextLayoutParamsTopMargin=0;
+            int commentTextSideMargin=0;
+            int commentTextSize=0;
+            if(metrics.densityDpi==DisplayMetrics.DENSITY_XHIGH)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 40; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 32; 
+            	}
+            	commentTimeSideMargin=13;
+            	commentTimeTextSize=13;
+            	commentTextLayoutParamsTopMargin=7;
+            	commentTextSideMargin=14;
+            	commentTextSize=15;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 35; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 27; 
+            	}
+            	commentTimeSideMargin=11;
+            	commentTimeTextSize=13;
+            	commentTextLayoutParamsTopMargin=7;
+            	commentTextSideMargin=12;
+            	commentTextSize=15;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 25; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 15; 
+            	}
+            	commentTimeSideMargin=10;
+            	commentTimeTextSize=12;
+            	commentTextLayoutParamsTopMargin=5;
+            	commentTextSideMargin=10;
+            	commentTextSize=14;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 28; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 16; 
+            	}
+            	commentTimeSideMargin=7;
+            	commentTimeTextSize=12;
+            	commentTextLayoutParamsTopMargin=6;
+            	commentTextSideMargin=7;
+            	commentTextSize=14;
+            }
+            else
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 40; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 32; 
+            	}
+            	commentTimeSideMargin=13;
+            	commentTimeTextSize=13;
+            	commentTextLayoutParamsTopMargin=7;
+            	commentTextSideMargin=14;
+            	commentTextSize=15;
+            }
+    		commentTimeLayoutParams.topMargin=commentTimeLayoutParamsTopMargin;
+    		commentTimeLayoutParams.leftMargin=commentTimeSideMargin;
+    		commentTimeLayoutParams.rightMargin=commentTimeSideMargin;
+    		commentTime.setTextColor(getResources().getColor(R.color.incidentTimeTextColor));
+    		commentTime.setTextSize(commentTimeTextSize);
+    		commentTime.setLayoutParams(commentTimeLayoutParams);
+    		relativeLayout.addView(commentTime);
+    		commentTimeList.add(commentTime);
+    		Animation showTimeAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+			showTimeAnimation.setDuration(commentTextShowAnimationTime);
+			showTimeAnimation.setStartOffset(count*commentTextShowAnimationTime);
+			commentTime.clearAnimation();
+			commentTime.startAnimation(showTimeAnimation);
+    		
+    		final TextView commentText=new TextView(this);
+    		commentText.setId(4672+commentTextList.size());
+    		commentText.setText(comments[count][1]);
+    		RelativeLayout.LayoutParams commentTextLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+    		commentTextLayoutParams.addRule(RelativeLayout.BELOW,commentTime.getId());
+    		commentTextLayoutParams.topMargin=commentTextLayoutParamsTopMargin;
+    		commentTextLayoutParams.leftMargin=commentTextSideMargin;
+    		commentTextLayoutParams.rightMargin=commentTextSideMargin;
+    		commentText.setTextColor(getResources().getColor(R.color.normalTextColor));
+    		commentText.setTextSize(commentTextSize);
+    		commentText.setLayoutParams(commentTextLayoutParams);
+    		relativeLayout.addView(commentText);
+    		commentTextList.add(commentText);
+    		Animation showIncidentAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
+    		showIncidentAnimation.setDuration(commentTextShowAnimationTime);
+    		showIncidentAnimation.setStartOffset(count*commentTextShowAnimationTime+commentTextShowAnimationTime/2);
+			commentText.clearAnimation();
+			commentText.startAnimation(showIncidentAnimation);
+    		
+    		count++;
+    	}
+    }
 }
