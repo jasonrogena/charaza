@@ -3,8 +3,10 @@ package com.charaza;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.AsyncTask;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.charaza.resources.CharazaData;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.R;
 import com.devspark.sidenavigation.SideNavigationView;
@@ -26,6 +28,7 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,7 +46,10 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private TextView incidentActivityIncident;
 	private EditText commentEditText;
 	private Button postCommentButton;
+	private ProgressBar progressBar;
+	private TextView noCommentText;
 	
+	private CharazaData charazaData;
 	private float previousY;
 	private int networkCheckStatus=0;
 	private int incidentId;
@@ -61,6 +67,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incident_activity);
         
+        //initialize views
         mainLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityMainLayout);
         relativeLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityRelativeLayout);
         scrollView=(ScrollView)this.findViewById(R.id.incidentActivityScrollView);
@@ -112,7 +119,11 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		postCommentButton=(Button)this.findViewById(R.id.incidentActivityPostCommentButton);
 		postCommentButton.setOnClickListener(this);
 		postCommentButton.setOnTouchListener(this);
+		progressBar=(ProgressBar)this.findViewById(R.id.incidentActivityProgressBar);
+		noCommentText=(TextView)this.findViewById(R.id.incidentactivityNoCommentText);
 		
+		//initialize resources
+		charazaData=new CharazaData(this);
 		previousY=0;
 		buttonAnimationTime=200;
 		commentEditTextAnimationTime=400;
@@ -126,6 +137,13 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		commentTimeList=new ArrayList<TextView>();
 		commentTextList=new ArrayList<TextView>();
 		context=this;
+		
+		//check network connection
+        if(!charazaData.checkNetworkConnection() && networkCheckStatus==0)
+        {
+        	charazaData.networkError();
+        	networkCheckStatus=1;
+        }
     }
     
     @Override
@@ -487,7 +505,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		return true;
 	}
 	
-	public void addIncidents(String[][] comments)
+	public void addComments(String[][] comments)
     {
     	int count=0;
     	while(count<comments.length)
@@ -631,4 +649,42 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
     		count++;
     	}
     }
+	
+	private class GetCommentsThread extends AsyncTask<String, Integer, String[][]>
+	{
+
+		@Override
+		protected void onPreExecute() 
+		{
+			progressBar.setVisibility(ProgressBar.VISIBLE);
+			noCommentText.setVisibility(TextView.GONE);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String[][] doInBackground(String... arg0)
+		{
+			return charazaData.getComments(incidentId, arg0[0]);
+		}
+
+		@Override
+		protected void onPostExecute(String[][] result)
+		{
+			progressBar.setVisibility(ProgressBar.GONE);
+			if(result!=null)
+			{
+				addComments(result);
+			}
+			else
+			{
+				Log.e("getComments()", "getComments() returned null");
+				if(commentTextList.size()==0)
+				{
+					noCommentText.setVisibility(TextView.VISIBLE);
+				}
+			}
+			super.onPostExecute(result);
+		}
+		
+	}
 }
