@@ -732,6 +732,7 @@ containing a value of this type.
         public static final int activityTitleHeight=0x7f070018;
         public static final int activityTitleTextSize=0x7f070019;
         public static final int commentButtonHeight=0x7f07002c;
+        public static final int commetEditTextHeight=0x7f07002d;
         public static final int fromRelatedViewVMargin=0x7f07001e;
         public static final int fromTitleVMargin=0x7f07001d;
         public static final int fromUnrelatedViewVMargin=0x7f07001f;

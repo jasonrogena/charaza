@@ -241,62 +241,80 @@ public class CharazaData implements Serializable
 	
 	public String[][] getComments(int incident,String time)
 	{
-		//date should be all if you want to get all comments
-		if(checkNetworkConnection())
+		//date should be 'all' if you want to get all comments
+		if(time==null||time=="")
 		{
-			HttpParams httpParameters = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
-			HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
-			HttpClient httpClient=new DefaultHttpClient(httpParameters);
-			HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/getComments.php");
-			try
+			Log.w("getComments()", "time is empty thus method returned null");
+			return null;
+		}
+		else
+		{
+			if(checkNetworkConnection())
 			{
-				String[] dates=getLastUpdated();
-				if(dates==null)
+				Log.d("getComments()", "network is good");
+				HttpParams httpParameters = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
+				HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
+				HttpClient httpClient=new DefaultHttpClient(httpParameters);
+				HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/getComments.php");
+				try
 				{
-					dates=new String[1];
-					dates[0]="1";
-					Log.e("getLastUpdated()", "getLastUpdated() returned null probably because the database is closed");
-				}
-				List<NameValuePair> nameValuePairs=new ArrayList<NameValuePair>(2);
-				nameValuePairs.add(new BasicNameValuePair("_id", dates[0]));
-				nameValuePairs.add(new BasicNameValuePair("incident", String.valueOf(incident)));
-				nameValuePairs.add(new BasicNameValuePair("time", time));
-				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				
-				HttpResponse httpResponse=httpClient.execute(httpPost);
-				if(httpResponse.getStatusLine().getStatusCode()==200)
-				{
-					HttpEntity httpEntity=httpResponse.getEntity();
-					if(httpEntity!=null)
+					String[] dates=getLastUpdated();
+					if(dates==null)
 					{
-						InputStream inputStream=httpEntity.getContent();
-						String responseString=convertStreamToString(inputStream);
-						if(!responseString.contains("upt0d@te"))
+						dates=new String[1];
+						dates[0]="1";
+						Log.e("getLastUpdated()", "getLastUpdated() returned null probably because the database is closed");
+					}
+					Log.d("time", time);
+					List<NameValuePair> nameValuePairs=new ArrayList<NameValuePair>(2);
+					nameValuePairs.add(new BasicNameValuePair("_id", dates[0]));
+					nameValuePairs.add(new BasicNameValuePair("incident", String.valueOf(incident)));
+					nameValuePairs.add(new BasicNameValuePair("time", time));
+					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					
+					HttpResponse httpResponse=httpClient.execute(httpPost);
+					if(httpResponse.getStatusLine().getStatusCode()==200)
+					{
+						Log.d("getComments()", "response gotten from server");
+						HttpEntity httpEntity=httpResponse.getEntity();
+						if(httpEntity!=null)
 						{
-							JSONArray jsonArray=new JSONArray(responseString);
-							JSONObject jsonObject=new JSONObject();
-							int count=0;
-							String[][] results=new String[jsonArray.length()][3];
-							while(count<jsonArray.length())
+							Log.d("getComments()", "http entry is not null");
+							InputStream inputStream=httpEntity.getContent();
+							String responseString=convertStreamToString(inputStream);
+							if(!responseString.contains("upt0d@te"))
 							{
-								jsonObject=jsonArray.getJSONObject(count);
-								results[count][0]=jsonObject.getString("_id");
-								results[count][1]=jsonObject.getString("text");
-								results[count][2]=jsonObject.getString("time");
-								Log.d("comments", "new comment added");
-								count++;
+								
+								JSONArray jsonArray=new JSONArray(responseString);
+								JSONObject jsonObject=new JSONObject();
+								int count=0;
+								String[][] results=new String[jsonArray.length()][3];
+								while(count<jsonArray.length())
+								{
+									jsonObject=jsonArray.getJSONObject(count);
+									results[count][0]=jsonObject.getString("_id");
+									results[count][1]=jsonObject.getString("text");
+									results[count][2]=jsonObject.getString("time");
+									Log.d("comments", "new comment added");
+									count++;
+								}
+								return results;
 							}
-							return results;
+							else
+							{
+								Log.d("getComments()", "the server replied "+responseString);
+							}
 						}
 					}
 				}
-			}
-			catch(Exception e)
-			{
-				
+				catch(Exception e)
+				{
+					
+				}
 			}
 		}
+		
 		return null;
 	}
 	
@@ -375,25 +393,34 @@ public class CharazaData implements Serializable
 	
 	public boolean postComment(int incident, String comment)
 	{
-		HttpParams httpParameters = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
-		HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
-		HttpClient httpClient=new DefaultHttpClient(httpParameters);
-		HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/submitComment.php");
-		try
+		Log.d("postComment()", comment);
+		if(comment==null || comment=="")
 		{
-			List<NameValuePair> data=new ArrayList<NameValuePair>();
-			data.add(new BasicNameValuePair("_id", "1"));
-			data.add(new BasicNameValuePair("incident", String.valueOf(incident)));
-			data.add(new BasicNameValuePair("comment", comment));
-			httpPost.setEntity(new UrlEncodedFormEntity(data));
-			httpClient.execute(httpPost);
-			
-			return true;
+			Log.w("postComment()", "the comment was either null or empty. method has been exited and comment not posted");
+			return false;
 		}
-		catch(Exception e)
+		else
 		{
-			Log.w("Http connection", "unable to send comment");
+			HttpParams httpParameters = new BasicHttpParams();
+			HttpConnectionParams.setConnectionTimeout(httpParameters, httpPostTimout);
+			HttpConnectionParams.setSoTimeout(httpParameters, httpResponseTimout);
+			HttpClient httpClient=new DefaultHttpClient(httpParameters);
+			HttpPost httpPost=new HttpPost(CharazaData.baseURL+"/submitComment.php");
+			try
+			{
+				List<NameValuePair> data=new ArrayList<NameValuePair>();
+				data.add(new BasicNameValuePair("_id", "1"));
+				data.add(new BasicNameValuePair("incident", String.valueOf(incident)));
+				data.add(new BasicNameValuePair("comment", comment));
+				httpPost.setEntity(new UrlEncodedFormEntity(data));
+				httpClient.execute(httpPost);
+				
+				return true;
+			}
+			catch(Exception e)
+			{
+				Log.w("Http connection", "unable to send comment");
+			}
 		}
 		return false;
 	}

@@ -96,6 +96,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         {
         	minHeight=display.getHeight()-150;
         }
+        scrollView.setMinimumHeight(minHeight);
         relativeLayout.setMinimumHeight(minHeight);
         
         sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_incident_activity);
@@ -118,7 +119,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		commentEditText=(EditText)this.findViewById(R.id.incidentActivityCommentEditText);
 		postCommentButton=(Button)this.findViewById(R.id.incidentActivityPostCommentButton);
 		postCommentButton.setOnClickListener(this);
-		postCommentButton.setOnTouchListener(this);
+		//postCommentButton.setOnTouchListener(this);
 		progressBar=(ProgressBar)this.findViewById(R.id.incidentActivityProgressBar);
 		noCommentText=(TextView)this.findViewById(R.id.incidentactivityNoCommentText);
 		
@@ -144,6 +145,9 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         	charazaData.networkError();
         	networkCheckStatus=1;
         }
+        
+        //fetch comments
+        new GetCommentsThread().execute("all");
     }
     
     @Override
@@ -169,16 +173,17 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	
 	private void commentButtonClicked()
 	{
+		noCommentText.setVisibility(TextView.GONE);
 		showCommentEditText(buttonAnimationTime);
 		commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 	}
 	
 	private void postCommentButtonClicked()
 	{
-		//hideCommentEditText();
+		postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
+		new PostCommentThread().execute(String.valueOf(incidentId),commentEditText.getText().toString());
 		hideKeyboard();
-		hidePostCommentButton(0);
-		postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+		//postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 	}
 	
 	private void charazaButtonClicked()
@@ -189,6 +194,14 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	
 	private void showCommentEditText(int startOffset)
 	{
+		if(commentTextList.size()>0)
+		{
+			RelativeLayout.LayoutParams commentEditTextLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, getResources().getDimensionPixelSize(R.dimen.commentButtonHeight));
+			//TODO: check if previous statement is buggy
+			commentEditTextLayoutParams.addRule(RelativeLayout.BELOW,commentTextList.get(commentTextList.size()-1).getId());
+			commentEditText.setLayoutParams(commentEditTextLayoutParams);
+		}
+		
 		Animation showCommentEditTextAnimation=new ScaleAnimation((float)1, (float)1, (float)0, (float)1, Animation.RELATIVE_TO_SELF, (float)0, Animation.RELATIVE_TO_SELF, (float)0);
 		showCommentEditTextAnimation.setDuration(commentEditTextAnimationTime);
 		showCommentEditTextAnimation.setStartOffset(startOffset);
@@ -196,7 +209,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		{
 			
 			@Override
-			public void onAnimationStart(Animation animation) 
+			public void onAnimationStart(Animation animation)
 			{
 				commentEditText.setVisibility(EditText.VISIBLE);
 				hideCommentButton();
@@ -439,9 +452,9 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	@Override
 	public void onClick(View view) 
 	{
-		if(view==commentButton)
+		if(view==postCommentButton)
 		{
-			
+			postCommentButtonClicked();
 		}
 	}
 	
@@ -456,7 +469,6 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			}
 			else if(event.getAction()==MotionEvent.ACTION_UP)
 			{
-				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 				commentButtonClicked();
 			}
 			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
@@ -464,7 +476,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			}
 		}
-		else if(view==postCommentButton)
+		/*else if(view==postCommentButton)
 		{
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
@@ -479,7 +491,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			{
 				postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 			}
-		}
+		}*/
 		else if(view==charazaButton)
 		{
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
@@ -517,7 +529,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
     		
     		if(commentTextList.size()==0)//first comment in the list
     		{
-    			commentTimeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+    			commentTimeLayoutParams.addRule(RelativeLayout.BELOW,incidentActivityIncident.getId());
     		}
     		
     		else
@@ -537,19 +549,67 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
             {
             	if(count==0)
             	{
-            		commentTimeLayoutParamsTopMargin = 40; 
+            		commentTimeLayoutParamsTopMargin = 35; 
             	}
             	else
             	{
-            		commentTimeLayoutParamsTopMargin = 32; 
+            		commentTimeLayoutParamsTopMargin = 29; 
             	}
-            	commentTimeSideMargin=13;
+            	commentTimeSideMargin=35;
             	commentTimeTextSize=13;
             	commentTextLayoutParamsTopMargin=7;
-            	commentTextSideMargin=14;
+            	commentTextSideMargin=35;
             	commentTextSize=15;
             }
             else if(metrics.densityDpi==DisplayMetrics.DENSITY_HIGH)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 27; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 21; 
+            	}
+            	commentTimeSideMargin=27;
+            	commentTimeTextSize=13;
+            	commentTextLayoutParamsTopMargin=6;
+            	commentTextSideMargin=27;
+            	commentTextSize=15;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 21; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 15; 
+            	}
+            	commentTimeSideMargin=21;
+            	commentTimeTextSize=12;
+            	commentTextLayoutParamsTopMargin=4;
+            	commentTextSideMargin=21;
+            	commentTextSize=14;
+            }
+            else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
+            {
+            	if(count==0)
+            	{
+            		commentTimeLayoutParamsTopMargin = 18; 
+            	}
+            	else
+            	{
+            		commentTimeLayoutParamsTopMargin = 11; 
+            	}
+            	commentTimeSideMargin=18;
+            	commentTimeTextSize=12;
+            	commentTextLayoutParamsTopMargin=3;
+            	commentTextSideMargin=18;
+            	commentTextSize=14;
+            }
+            else
             {
             	if(count==0)
             	{
@@ -557,65 +617,17 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
             	}
             	else
             	{
-            		commentTimeLayoutParamsTopMargin = 27; 
+            		commentTimeLayoutParamsTopMargin = 29; 
             	}
-            	commentTimeSideMargin=11;
+            	commentTimeSideMargin=35;
             	commentTimeTextSize=13;
             	commentTextLayoutParamsTopMargin=7;
-            	commentTextSideMargin=12;
-            	commentTextSize=15;
-            }
-            else if(metrics.densityDpi==DisplayMetrics.DENSITY_MEDIUM)
-            {
-            	if(count==0)
-            	{
-            		commentTimeLayoutParamsTopMargin = 25; 
-            	}
-            	else
-            	{
-            		commentTimeLayoutParamsTopMargin = 15; 
-            	}
-            	commentTimeSideMargin=10;
-            	commentTimeTextSize=12;
-            	commentTextLayoutParamsTopMargin=5;
-            	commentTextSideMargin=10;
-            	commentTextSize=14;
-            }
-            else if(metrics.densityDpi==DisplayMetrics.DENSITY_LOW)
-            {
-            	if(count==0)
-            	{
-            		commentTimeLayoutParamsTopMargin = 28; 
-            	}
-            	else
-            	{
-            		commentTimeLayoutParamsTopMargin = 16; 
-            	}
-            	commentTimeSideMargin=7;
-            	commentTimeTextSize=12;
-            	commentTextLayoutParamsTopMargin=6;
-            	commentTextSideMargin=7;
-            	commentTextSize=14;
-            }
-            else
-            {
-            	if(count==0)
-            	{
-            		commentTimeLayoutParamsTopMargin = 40; 
-            	}
-            	else
-            	{
-            		commentTimeLayoutParamsTopMargin = 32; 
-            	}
-            	commentTimeSideMargin=13;
-            	commentTimeTextSize=13;
-            	commentTextLayoutParamsTopMargin=7;
-            	commentTextSideMargin=14;
+            	commentTextSideMargin=35;
             	commentTextSize=15;
             }
     		commentTimeLayoutParams.topMargin=commentTimeLayoutParamsTopMargin;
     		commentTimeLayoutParams.leftMargin=commentTimeSideMargin;
-    		commentTimeLayoutParams.rightMargin=commentTimeSideMargin;
+    		commentTimeLayoutParams.rightMargin=commentTimeSideMargin/2;
     		commentTime.setTextColor(getResources().getColor(R.color.incidentTimeTextColor));
     		commentTime.setTextSize(commentTimeTextSize);
     		commentTime.setLayoutParams(commentTimeLayoutParams);
@@ -634,7 +646,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
     		commentTextLayoutParams.addRule(RelativeLayout.BELOW,commentTime.getId());
     		commentTextLayoutParams.topMargin=commentTextLayoutParamsTopMargin;
     		commentTextLayoutParams.leftMargin=commentTextSideMargin;
-    		commentTextLayoutParams.rightMargin=commentTextSideMargin;
+    		commentTextLayoutParams.rightMargin=commentTextSideMargin/2;
     		commentText.setTextColor(getResources().getColor(R.color.normalTextColor));
     		commentText.setTextSize(commentTextSize);
     		commentText.setLayoutParams(commentTextLayoutParams);
@@ -683,6 +695,56 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 					noCommentText.setVisibility(TextView.VISIBLE);
 				}
 			}
+			super.onPostExecute(result);
+		}
+		
+	}
+	
+	private class PostCommentThread extends AsyncTask<String, Integer, Boolean>
+	{
+
+		@Override
+		protected void onPreExecute()
+		{
+			commentEditText.setEnabled(false);
+			postCommentButton.setClickable(false);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params)
+		{
+			//postCommet(incident,comment)
+			Log.d("comment incident", params[0]);
+			Log.d("comment comment", params[1]);
+			return charazaData.postComment(Integer.parseInt(params[0]), params[1]);
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result)
+		{
+			if(result)
+			{
+				commentEditText.setText("");
+				Toast.makeText(context, "Your comment has been added", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				Toast.makeText(context, "A problem occured while trying to add your comment", Toast.LENGTH_LONG).show();
+			}
+			postCommentButton.setClickable(true);
+			postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+			commentEditText.setEnabled(true);
+			hidePostCommentButton(0);
+			if(commentTimeList.size()>0)
+			{
+				new GetCommentsThread().execute(commentTimeList.get(commentTimeList.size()-1).getText().toString());
+			}
+			else
+			{
+				new GetCommentsThread().execute("all");
+			}
+			
 			super.onPostExecute(result);
 		}
 		
