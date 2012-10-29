@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
 
 public class IncidentActivity extends SherlockActivity implements View.OnClickListener, ISideNavigationCallback, View.OnTouchListener
 {
@@ -61,6 +62,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	private List<TextView> commentTimeList;
 	private List<TextView> commentTextList;
 	private int commentTextShowAnimationTime;
+	private GetCommentsThread commentsThread;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -71,7 +73,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         mainLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityMainLayout);
         relativeLayout=(RelativeLayout)this.findViewById(R.id.incidentActivityRelativeLayout);
         scrollView=(ScrollView)this.findViewById(R.id.incidentActivityScrollView);
-        scrollView.setOnTouchListener(this);
+        //scrollView.setOnTouchListener(this);
         int minHeight=0;
         Display display=this.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -96,7 +98,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         {
         	minHeight=display.getHeight()-150;
         }
-        scrollView.setMinimumHeight(minHeight);
+        //scrollView.setMinimumHeight(minHeight);
         relativeLayout.setMinimumHeight(minHeight);
         
         sideNavigationView=(SideNavigationView)this.findViewById(R.id.side_navigation_view_incident_activity);
@@ -110,6 +112,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		//incidentActivityCommentButton.setOnTouchListener(this);
 		commentButton.setOnClickListener(this);
 		commentButton.setOnTouchListener(this);
+		commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 		charazaButton=(Button)this.findViewById(R.id.incidentActivityCharazaButton);
 		charazaButton.setOnTouchListener(this);
 		charazaButton.setOnClickListener(this);
@@ -119,6 +122,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		commentEditText=(EditText)this.findViewById(R.id.incidentActivityCommentEditText);
 		postCommentButton=(Button)this.findViewById(R.id.incidentActivityPostCommentButton);
 		postCommentButton.setOnClickListener(this);
+		postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 		//postCommentButton.setOnTouchListener(this);
 		progressBar=(ProgressBar)this.findViewById(R.id.incidentActivityProgressBar);
 		noCommentText=(TextView)this.findViewById(R.id.incidentactivityNoCommentText);
@@ -147,7 +151,8 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
         }
         
         //fetch comments
-        new GetCommentsThread().execute("all");
+        commentsThread=new GetCommentsThread();
+        commentsThread.execute("all");
     }
     
     @Override
@@ -173,9 +178,16 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	
 	private void commentButtonClicked()
 	{
+		cancleGettingComments(commentsThread);
 		noCommentText.setVisibility(TextView.GONE);
 		showCommentEditText(buttonAnimationTime);
 		commentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
+	}
+	
+	private void cancleGettingComments(GetCommentsThread getCommentsThread)
+	{
+		getCommentsThread.cancel(true);
+		progressBar.setVisibility(ProgressBar.GONE);
 	}
 	
 	private void postCommentButtonClicked()
@@ -183,6 +195,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonFocusedColor));
 		new PostCommentThread().execute(String.valueOf(incidentId),commentEditText.getText().toString());
 		hideKeyboard();
+		//resetScrollViewLayoutParams();
 		//postCommentButton.setBackgroundColor(getResources().getColor(R.color.aliasButtonBackground));
 	}
 	
@@ -196,8 +209,12 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 	{
 		if(commentTextList.size()>0)
 		{
-			RelativeLayout.LayoutParams commentEditTextLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, getResources().getDimensionPixelSize(R.dimen.commentButtonHeight));
-			//TODO: check if previous statement is buggy
+			RelativeLayout.LayoutParams commentEditTextLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, getResources().getDimensionPixelSize(R.dimen.commetEditTextHeight));
+			/*android:layout_marginTop="@dimen/fromRelatedViewVMargin"
+			        android:layout_marginLeft="@dimen/sideMargin"
+			        android:layout_marginRight="@dimen/sideMargin"
+			        android:layout_marginBottom="0dp"*/
+			commentEditTextLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.sideMargin), getResources().getDimensionPixelSize(R.dimen.fromRelatedViewVMargin), getResources().getDimensionPixelSize(R.dimen.sideMargin), 0);
 			commentEditTextLayoutParams.addRule(RelativeLayout.BELOW,commentTextList.get(commentTextList.size()-1).getId());
 			commentEditText.setLayoutParams(commentEditTextLayoutParams);
 		}
@@ -226,7 +243,10 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			public void onAnimationEnd(Animation animation)
 			{
 				commentEditText.requestFocus();
+				showKeyboard(commentEditText);
 				showPostCommentButton(0);
+				//resetScrollViewLayoutParams();
+				//scrollToBottom();
 			}
 		});
 		commentEditText.clearAnimation();
@@ -257,8 +277,8 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			@Override
 			public void onAnimationEnd(Animation animation)
 			{
-				// TODO Auto-generated method stub
-				
+				scrollView.scrollTo(0, commentEditText.getTop()+commentEditText.getHeight());
+				relativeLayout.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.commetEditTextHeight));
 			}
 		});
 		postCommentButton.clearAnimation();
@@ -293,6 +313,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			{
 				commentEditText.setVisibility(EditText.GONE);
 				showCommentButton();
+				mainLayout.invalidate();
 			}
 		});
 		commentEditText.clearAnimation();
@@ -354,6 +375,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			@Override
 			public void onAnimationEnd(Animation animation)
 			{
+				relativeLayout.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.fromRelatedViewVMargin));
 				postCommentButton.setVisibility(Button.GONE);
 				hideCommentEditText(0);
 				//hideKeyboard();
@@ -362,6 +384,25 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 		});
 		postCommentButton.clearAnimation();
 		postCommentButton.startAnimation(hidePostCommentButtonAnimation);
+	}
+	
+	private void scrollToBottom()
+	{
+		scrollView.post(new Runnable() 
+		{
+
+	        @Override
+	        public void run() 
+	        {
+	        	scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+	        }
+	    });
+	}
+	
+	private void showKeyboard(EditText editText)
+	{
+		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
 	}
 	
 	private void hideKeyboard()
@@ -398,12 +439,27 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				@Override
 				public void onAnimationEnd(Animation animation) 
 				{
-					
+					resetScrollViewLayoutParams();
+					mainLayout.invalidate();
 				}
 			});
 			commentButton.clearAnimation();
 			commentButton.startAnimation(showButtonAnimation);
 			commentButtonStatus=1;
+		}
+	}
+	
+	private void resetScrollViewLayoutParams()
+	{
+		if(commentButton.getVisibility()==Button.GONE)
+		{
+			RelativeLayout.LayoutParams scrollViewLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mainLayout.getHeight()-charazaButton.getHeight());
+			scrollView.setLayoutParams(scrollViewLayoutParams);
+		}
+		else
+		{
+			RelativeLayout.LayoutParams scrollViewLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mainLayout.getHeight()-charazaButton.getHeight()-commentButton.getHeight());
+			scrollView.setLayoutParams(scrollViewLayoutParams);
 		}
 	}
 	
@@ -434,6 +490,7 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 				public void onAnimationEnd(Animation animation) 
 				{
 					commentButton.setVisibility(Button.GONE);
+					resetScrollViewLayoutParams();
 				}
 			});
 			commentButton.clearAnimation();
@@ -717,7 +774,15 @@ public class IncidentActivity extends SherlockActivity implements View.OnClickLi
 			//postCommet(incident,comment)
 			Log.d("comment incident", params[0]);
 			Log.d("comment comment", params[1]);
-			return charazaData.postComment(Integer.parseInt(params[0]), params[1]);
+			if(params[1]!=null && params[1].trim().length()>0)
+			{
+				return charazaData.postComment(Integer.parseInt(params[0]), params[1]);
+			}
+			else
+			{
+				return false;
+			}
+			
 		}
 		
 		@Override

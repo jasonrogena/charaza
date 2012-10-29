@@ -17,7 +17,7 @@
         <RelativeLayout 
 	    	android:id="@+id/incidentActivityRelativeLayout"
 	    	android:layout_width="match_parent"
-	    	android:layout_height="match_parent"
+	    	android:layout_height="wrap_content"
 	    	android:paddingBottom="@dimen/fromRelatedViewVMargin">
 	    	<TextView 
 	    	    android:id="@+id/incidentactivityNoCommentText"
