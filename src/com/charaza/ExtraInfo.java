@@ -3,6 +3,7 @@ package com.charaza;
 import java.util.ArrayList;
 import java.util.List;
 import com.charaza.resources.CharazaData;
+import com.charaza.resources.MulikaDataCarrier;
 import com.charaza.resources.Profile;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -76,6 +77,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 	private ProgressBar aliasTypeProgressBar;
 	private int addedAliasButtonTextSize;
 	private int clickedAliasButton;
+	private MulikaDataCarrier mulikaDataCarrier;
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -149,9 +151,11 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		
 		//initialise utils
 		profile=new Profile();
+		mulikaDataCarrier=new MulikaDataCarrier();
 		Bundle bundle=this.getIntent().getExtras();
 		networkCheckStatus=bundle.getInt("networkCheckStatus");
 		profile=bundle.getParcelable(profile.PARCELABLE_KEY);
+		mulikaDataCarrier=bundle.getParcelable(mulikaDataCarrier.PARCELABLE_KEY);
 		profile.setContext(this);
 		context=this;
 		addedAliasButtonTextSize=17;
@@ -348,6 +352,7 @@ public class ExtraInfo extends SherlockActivity implements View.OnClickListener,
 		intent.putExtra("networkCheckStatus", networkCheckStatus);
 		Bundle bundle=new Bundle();
 		bundle.putParcelable(profile.PARCELABLE_KEY, profile);
+		bundle.putParcelable(mulikaDataCarrier.PARCELABLE_KEY, mulikaDataCarrier);
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}

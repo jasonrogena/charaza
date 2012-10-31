@@ -1,6 +1,7 @@
 package com.charaza;
 
 import com.charaza.resources.CharazaData;
+import com.charaza.resources.MulikaDataCarrier;
 import com.charaza.resources.Profile;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -30,6 +31,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private ImageButton extraInfoButton;
 	private ImageButton mulikaButton;
 	private ScrollView mulikaScrollView;
+	private TextView detailsLabel;
 	protected CharazaData charazaData;
 	protected Profile profile;
 	private String[] names;
@@ -63,6 +67,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private Bitmap extraInfoButtonClickedImage;
 	private Bitmap mulikaButtonUnclickedImage;
 	private Bitmap mulikaButtonClickedImage;
+	private MulikaDataCarrier mulikaDataCarrier;
+	private String selectedPost;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
 	@SuppressWarnings("deprecation")
 	@Override
@@ -133,7 +139,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		extraInfoButton.setOnTouchListener(this);
 		nameTextBox=(AutoCompleteTextView)findViewById(R.id.nameTextBox);
 		post=(Spinner)findViewById(R.id.post);
-        post.setOnItemSelectedListener(this);
+        //post.setOnItemSelectedListener(this);
         somethingElse=(AutoCompleteTextView)findViewById(R.id.somethingElse);
         details=(EditText)findViewById(R.id.details);
         mulikaButton=(ImageButton)this.findViewById(R.id.mulikaButton);
@@ -144,10 +150,13 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         WindowManager.LayoutParams layoutParams=splashScreen.getWindow().getAttributes();
 		layoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;//since FILL_PARENT was deprecated
 		layoutParams.height=WindowManager.LayoutParams.MATCH_PARENT;
+		detailsLabel=(TextView)this.findViewById(R.id.detailsLabel);
 		splashScreen.show();
         
 		
 		//initialise resources
+		selectedPost=null;
+		mulikaDataCarrier=new MulikaDataCarrier();
 		charazaData=new CharazaData(this);
 		profile=new Profile(this);//no need to call set context in this situation since the database is initialised in this situation
 		Bundle bundle=this.getIntent().getExtras();
@@ -157,6 +166,11 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			{
 				profile=bundle.getParcelable(profile.PARCELABLE_KEY);
 				profile.setContext(this);
+			}
+			if(bundle.getParcelable(mulikaDataCarrier.PARCELABLE_KEY)!=null)
+			{
+				mulikaDataCarrier=bundle.getParcelable(mulikaDataCarrier.PARCELABLE_KEY);
+				restoreMulikaData();
 			}
 			networkCheckStatus=bundle.getInt("networkCheckStatus");
 			splashScreen.dismiss();
@@ -188,8 +202,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         }
 		
       //fetch network data
-      new GetPostsThread().execute(0);
       new GetProfilesThread().execute(0);
+      new GetPostsThread().execute(0);
     }
     
     @Override
@@ -250,6 +264,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     
     public void setPostSuggestions(String[] posts)
     {
+    	Log.d("setpostsuggestions called","called");
     	String[] extraPosts=new String[posts.length+2];
     	for(int i=0;i<extraPosts.length;i++)
     	{
@@ -269,10 +284,16 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
     	ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint, extraPosts);//android.R.layout.simple_dropdown_item_1line
     	arrayAdapter.setDropDownViewResource(R.layout.simple_dropdown_hint);//android.R.layout.simple_spinner_dropdown_item
     	this.post.setAdapter(arrayAdapter);
+    	post.setOnItemSelectedListener(this);
     	ArrayAdapter<String> arrayAdapter2=new ArrayAdapter<String>(this, R.layout.simple_dropdown_hint, posts);
     	this.somethingElse.setAdapter(arrayAdapter2);
     	this.posts=posts;
     	this.extraPosts=extraPosts;
+    	if(mulikaDataCarrier.getPostPostion(extraPosts)!=-1)
+    	{
+    		post.setSelection(mulikaDataCarrier.getPostPostion(this.extraPosts));
+    		Log.d("post suggestion", "post should be restored ");
+    	}
     }
     
     private void extraInfoButtonClicked()
@@ -281,8 +302,62 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		intent.putExtra("networkCheckStatus", networkCheckStatus);
 		Bundle bundle=new Bundle();
 		bundle.putParcelable(profile.PARCELABLE_KEY, profile);
+		saveMulikaData();
+		bundle.putParcelable(mulikaDataCarrier.PARCELABLE_KEY, mulikaDataCarrier);
 		intent.putExtras(bundle);
 		startActivity(intent);
+    }
+    
+    private void saveMulikaData()
+    {
+		boolean status=true;
+		if(somethingElse.getVisibility()==AutoCompleteTextView.VISIBLE)
+		{
+			status=false;
+		}
+		mulikaDataCarrier=new MulikaDataCarrier(extraPosts[post.getSelectedItemPosition()], somethingElse.getText().toString(), details.getText().toString(),status);
+		
+		profile.setName(nameTextBox.getText().toString());
+		/*if(somethingElse.getVisibility()==AutoCompleteTextView.VISIBLE)
+		{
+			profile.setPost(somethingElse.getText().toString());
+		}
+		else
+		{
+			if(extraPosts[post.getSelectedItemPosition()]=="I don't know")
+			{
+				profile.setPost("");
+			}
+			else		
+			{
+				profile.setPost(extraPosts[post.getSelectedItemPosition()]);
+			}
+		}*/
+    }
+    
+    private void restoreMulikaData()
+    {
+    	nameTextBox.setText(profile.getName());
+    	
+    	//post restored in setPostSuggestions()
+    	
+    	/*if(mulikaDataCarrier.getProfileStatus()==true)
+    	{ 
+    		somethingElse.setVisibility(AutoCompleteTextView.GONE);
+    		post.setVisibility(Spinner.VISIBLE);
+    	}
+    	else
+    	{
+    		somethingElse.setVisibility(AutoCompleteTextView.VISIBLE);
+    		post.setVisibility(Spinner.GONE);
+    		RelativeLayout.LayoutParams detailsLableLayoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+    		detailsLableLayoutParams.addRule(RelativeLayout.BELOW,somethingElse.getId());
+    		detailsLableLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.sideMargin), getResources().getDimensionPixelSize(R.dimen.fromUnrelatedViewVMargin), 0, 0);
+    		detailsLableLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+    		detailsLabel.setLayoutParams(detailsLableLayoutParams);
+    	}*/
+    	somethingElse.setText(mulikaDataCarrier.getSomethingElse());
+    	details.setText(mulikaDataCarrier.getIncidentDetails());
     }
     
     @Override
@@ -560,16 +635,23 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3)
 	{
-		//TODO:deferenciate different views
-		String item=extraPosts[position];
-		if(item.contains("Something else"))
+		Log.d("onitemselectedListener", "itemselectedlistener called");
+		Log.d("position of selected item", String.valueOf(position));
+		Log.d("size of extraposts", String.valueOf(extraPosts.length));
+		if(extraPosts!=null && position<extraPosts.length)
 		{
-			post.setVisibility(Spinner.INVISIBLE);
-			somethingElse.setVisibility(AutoCompleteTextView.VISIBLE);
-			somethingElse.requestFocus();
-			nameTextBox.setNextFocusDownId(R.id.somethingElse);
-			details.setNextFocusUpId(R.id.somethingElse);
+			//TODO:deferenciate different views
+			String item=extraPosts[position];
+			if(item.contains("Something else"))
+			{
+				post.setVisibility(Spinner.INVISIBLE);
+				somethingElse.setVisibility(AutoCompleteTextView.VISIBLE);
+				somethingElse.requestFocus();
+				nameTextBox.setNextFocusDownId(R.id.somethingElse);
+				details.setNextFocusUpId(R.id.somethingElse);
+			}
 		}
+		
 	}
 
 	@Override
