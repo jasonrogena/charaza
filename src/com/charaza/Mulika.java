@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -24,6 +25,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,6 +56,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private ImageButton mulikaButton;
 	private ScrollView mulikaScrollView;
 	private TextView detailsLabel;
+	private TextView splashScreenName;
+	private TextView splashScreenSlogan;
 	protected CharazaData charazaData;
 	protected Profile profile;
 	private String[] names;
@@ -69,6 +75,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private Bitmap mulikaButtonClickedImage;
 	private MulikaDataCarrier mulikaDataCarrier;
 	private String selectedPost;
+	private boolean splashScreenFlag;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
 	@SuppressWarnings("deprecation")
 	@Override
@@ -147,6 +154,8 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         context=this;
         splashScreen=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         splashScreen.setContentView(R.layout.splash_screen);
+        splashScreenName=(TextView)splashScreen.findViewById(R.id.splashScreenText);
+        splashScreenSlogan=(TextView)splashScreen.findViewById(R.id.splashScreenSlogan);
         WindowManager.LayoutParams layoutParams=splashScreen.getWindow().getAttributes();
 		layoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;//since FILL_PARENT was deprecated
 		layoutParams.height=WindowManager.LayoutParams.MATCH_PARENT;
@@ -155,6 +164,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         
 		
 		//initialise resources
+		splashScreenFlag=false;
 		selectedPost=null;
 		mulikaDataCarrier=new MulikaDataCarrier();
 		charazaData=new CharazaData(this);
@@ -174,6 +184,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			}
 			networkCheckStatus=bundle.getInt("networkCheckStatus");
 			splashScreen.dismiss();
+			splashScreenFlag=true;
 		}
 		
 		names=null;
@@ -540,10 +551,12 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			{
 				Log.e("getProfiles()", "getProfiles() retured null probably becuase the database is already closed");
 			}
-			if(splashScreen.isShowing())
+			if(splashScreenFlag==false)
 			{
-				splashScreen.dismiss();
-				nameTextBox.requestFocus();
+				splashScreenFlag=true;
+				//splashScreen.dismiss();
+				//nameTextBox.requestFocus();
+				hideSplashScreenName();
 			}
 			super.onPostExecute(result);
 		}
@@ -591,10 +604,12 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			{
 				Log.e("getPosts()", "getPosts() returned null probably because the database is already closed");
 			}
-			if(splashScreen.isShowing())
+			if(splashScreenFlag==false)
 			{
-				splashScreen.dismiss();
-				nameTextBox.requestFocus();
+				splashScreenFlag=true;
+				//splashScreen.dismiss();
+				//nameTextBox.requestFocus();
+				hideSplashScreenName();
 			}
 			super.onPostExecute(result);
 		}
@@ -733,6 +748,113 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			}
 		}
 		return true;
+	}
+	
+	private void hideSplashScreenName()
+	{
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		Animation hideNameAnimation=new TranslateAnimation(0, -displaymetrics.widthPixels, 0, 0);
+		hideNameAnimation.setDuration(500);
+		hideNameAnimation.setAnimationListener(new Animation.AnimationListener()
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation)
+			{
+				showSplashScreenSlogan();
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) 
+			{
+				splashScreenName.setVisibility(TextView.GONE);
+				/*if(splashScreen.isShowing())
+				{
+					splashScreen.dismiss();
+					nameTextBox.requestFocus();
+				}*/
+				
+			}
+		});
+		splashScreenName.clearAnimation();
+		splashScreenName.startAnimation(hideNameAnimation);
+	}
+	
+	private void showSplashScreenSlogan()
+	{
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		Animation showSplashScreenSloganAnimation=new TranslateAnimation(displaymetrics.widthPixels, 0, 0, 0);
+		showSplashScreenSloganAnimation.setDuration(500);
+		
+		showSplashScreenSloganAnimation.setAnimationListener(new Animation.AnimationListener() 
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation)
+			{
+				splashScreenSlogan.setVisibility(TextView.VISIBLE);
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				phantomAnimation();
+				
+			}
+		});
+		splashScreenSlogan.clearAnimation();
+		splashScreenSlogan.startAnimation(showSplashScreenSloganAnimation);
+	}
+	
+	private void phantomAnimation()
+	{
+		Animation phantomAnimation=new ScaleAnimation(1, 1, 1, 1);
+		phantomAnimation.setDuration(1000);
+		phantomAnimation.setAnimationListener(new Animation.AnimationListener()
+		{
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				splashScreenName.setVisibility(TextView.GONE);
+				splashScreenSlogan.setVisibility(TextView.GONE);
+				if(splashScreen.isShowing())
+				{
+					splashScreen.dismiss();
+					nameTextBox.requestFocus();
+				}
+			}
+		});
+		splashScreenSlogan.clearAnimation();
+		splashScreenSlogan.startAnimation(phantomAnimation);
 	}
     
 }

@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">Charaza</string>
+    <string name="app_slogan">Because all bad people are pigs</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_mulika">Charaza</string>
     <string name="title_activity_ranks">Charaza</string>
