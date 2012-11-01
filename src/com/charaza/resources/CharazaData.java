@@ -72,6 +72,107 @@ public class CharazaData implements Serializable
 		writableDb.close();
 	}
 	
+	public boolean isFirstTimeMulika()
+	{
+		if(writableDb.isOpen())
+		{
+			Log.d("writable database", "writable db is open");
+			String selection="_id=1";
+			String[] columns={"mulika","ranks","latest","profile"};
+			String[][] result=databaseHelper.runSelectQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, columns, selection, null, null, null, null, null);
+			if(result!=null && result.length>0 && result[0]!=null && result[0].length>3)
+			{
+				if(result[0][0].equals("0"))//this is the first time
+				{
+					Log.d("first time", "this is the first time"+result[0][0]);
+					databaseHelper.runDeleteQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, "1");
+					databaseHelper.runInsertQuery(databaseHelper.INSTRUCTIONS_TABLE, new String[]{"_id","mulika","ranks","latest","profile"}, new String[]{"1","1",result[0][1],result[0][2],result[0][3]}, writableDb);
+					return true;
+				}
+				{
+					Log.d("first time", "this is not the first time");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public boolean isFirstTimeRanks()
+	{
+		if(writableDb.isOpen())
+		{
+			Log.d("writable database", "writable db is open");
+			String selection="_id=1";
+			String[] columns={"mulika","ranks","latest","profile"};
+			String[][] result=databaseHelper.runSelectQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, columns, selection, null, null, null, null, null);
+			if(result!=null && result.length>0 && result[0]!=null && result[0].length>3)
+			{
+				if(result[0][1].equals("0"))//this is the first time
+				{
+					Log.d("first time", "this is the first time"+result[0][1]);
+					databaseHelper.runDeleteQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, "1");
+					databaseHelper.runInsertQuery(databaseHelper.INSTRUCTIONS_TABLE, new String[]{"_id","mulika","ranks","latest","profile"}, new String[]{"1",result[0][0],"1",result[0][2],result[0][3]}, writableDb);
+					return true;
+				}
+				{
+					Log.d("first time", "this is not the first time");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public boolean isFirstTimeLatest()
+	{
+		if(writableDb.isOpen())
+		{
+			Log.d("writable database", "writable db is open");
+			String selection="_id=1";
+			String[] columns={"mulika","ranks","latest","profile"};
+			String[][] result=databaseHelper.runSelectQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, columns, selection, null, null, null, null, null);
+			if(result!=null && result.length>0 && result[0]!=null && result[0].length>3)
+			{
+				if(result[0][2].equals("0"))//this is the first time
+				{
+					Log.d("first time", "this is the first time"+result[0][2]);
+					databaseHelper.runDeleteQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, "1");
+					databaseHelper.runInsertQuery(databaseHelper.INSTRUCTIONS_TABLE, new String[]{"_id","mulika","ranks","latest","profile"}, new String[]{"1",result[0][0],result[0][1],"1",result[0][3]}, writableDb);
+					return true;
+				}
+				{
+					Log.d("first time", "this is not the first time");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public boolean isFirstTimeProfile()
+	{
+		if(writableDb.isOpen())
+		{
+			Log.d("writable database", "writable db is open");
+			String selection="_id=1";
+			String[] columns={"mulika","ranks","latest","profile"};
+			String[][] result=databaseHelper.runSelectQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, columns, selection, null, null, null, null, null);
+			if(result!=null && result.length>0 && result[0]!=null && result[0].length>3)
+			{
+				if(result[0][3].equals("0"))//this is the first time
+				{
+					Log.d("first time", "this is the first time"+result[0][3]);
+					databaseHelper.runDeleteQuery(writableDb, databaseHelper.INSTRUCTIONS_TABLE, "1");
+					databaseHelper.runInsertQuery(databaseHelper.INSTRUCTIONS_TABLE, new String[]{"_id","mulika","ranks","latest","profile"}, new String[]{"1",result[0][0],result[0][1],result[0][2],"1"}, writableDb);
+					return true;
+				}
+				{
+					Log.d("first time", "this is not the first time");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	public String[][] getProfiles()
 	{
 		if(readableDb.isOpen())

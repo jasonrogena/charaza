@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable
 	public static final String POST_TABLE="post";
 	public static final String ALIAS_TYPE_TABLE="alias_type";
 	public static final String PROPERTIES_TABLE="properties";
+	public static final String INSTRUCTIONS_TABLE="instructions";
 	public static final int VERSION=1;
 	
 	public DatabaseHelper(Context context)
@@ -42,12 +43,21 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable
 		db.execSQL("CREATE TABLE "+COMMENT_TABLE+" (_id INTEGER PRIMARY KEY, incident INTEGER, text TEXT, time TEXT);");
 		db.execSQL("CREATE TABLE "+POST_TABLE+" (_id INTEGER PRIMARY KEY, text TEXT);");//will store all posts
 		db.execSQL("CREATE TABLE "+ALIAS_TYPE_TABLE+" (_id INTEGER, text TEXT);");//will store all alias types
+		db.execSQL("CREATE TABLE "+INSTRUCTIONS_TABLE+" (_id INTEGER, mulika INTEGER, ranks INTEGER, latest INTEGER, profile INTEGER)");
 		ContentValues cv=new ContentValues();
 		cv.put("_id", 1);
 		cv.put("last_profile_update","2000-1-1 01:00:00");//date should be in GMT
 		cv.put("last_post_update","2000-1-1 01:00:00");
 		cv.put("last_alias_type_update","2000-1-1 01:00:00");
 		db.insert(PROPERTIES_TABLE, null,cv);
+		cv.clear();
+		
+		cv.put("_id",1);
+		cv.put("mulika",0);
+		cv.put("ranks",0);
+		cv.put("latest",0);
+		cv.put("profile",0);
+		db.insert(INSTRUCTIONS_TABLE,null,cv);
 		cv.clear();
 		
 		/*//TEST DATA

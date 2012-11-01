@@ -83,6 +83,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private Button welcomeDoneButton;
 	private Dialog mulikaInstructionsDialog;
 	private Button mulikaInstructionsButton;
+	private boolean isFirstTimeMulika;
 	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -108,6 +109,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         
         
         //initialise views
+        isFirstTimeMulika=true;
 		mulikaScrollView=(ScrollView)this.findViewById(R.id.mulikaScrollView);
 		//mulikaScrollView.setOnTouchListener(gestureListener);
 		
@@ -234,6 +236,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
         }
 		
       //fetch network data
+      new GetIsFirstTimeMulikaTread().execute(0);
       new GetProfilesThread().execute(0);
       new GetPostsThread().execute(0);
     }
@@ -535,6 +538,38 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 			return false;
 		}
 	}*/
+    
+    private class GetIsFirstTimeMulikaTread extends AsyncTask<Integer, Integer, Integer>
+    {
+
+		@Override
+		protected Integer doInBackground(Integer... params)
+		{
+			if(charazaData.isFirstTimeMulika())
+			{
+				return 1;//true
+			}
+			else
+			{
+				return 0;//false
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Integer result)
+		{
+			if(result==1)
+			{
+				isFirstTimeMulika=true;
+			}
+			else
+			{
+				isFirstTimeMulika=false;
+			}
+			super.onPostExecute(result);
+		}
+    	
+    }
     
     private class GetProfilesThread extends AsyncTask<Integer, Integer, String[]>
     {
@@ -911,7 +946,10 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 					splashScreen.dismiss();
 					nameTextBox.requestFocus();
 				}
-				welcomeDialog.show();
+				if(isFirstTimeMulika)
+				{
+					welcomeDialog.show();
+				}
 			}
 		});
 		splashScreenSlogan.clearAnimation();

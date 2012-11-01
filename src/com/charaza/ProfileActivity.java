@@ -112,7 +112,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 		profileInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
 		profileInstructionsButton=(Button)profileInstructionsDialog.findViewById(R.id.profileInstructionsButton);
 		profileInstructionsButton.setOnTouchListener(this);
-		profileInstructionsDialog.show();
+		//profileInstructionsDialog.show();
         
         //initialise resources
         incidentShowAnimationTime=180;
@@ -132,6 +132,7 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         //Thread thread=new Thread(new Initialiser());
         //thread.run();
         //new GetProfileThread().execute(0);
+        new GetIsFirstTimeProfileTread().execute(0);
         new GetIncidentsThread().execute(0);
         profileActivityProgressBar.setVisibility(ProgressBar.VISIBLE);
     }
@@ -404,6 +405,34 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
     		
     		count++;
     	}
+    }
+    
+    private class GetIsFirstTimeProfileTread extends AsyncTask<Integer, Integer, Integer>
+    {
+
+		@Override
+		protected Integer doInBackground(Integer... params)
+		{
+			if(charazaData.isFirstTimeProfile())
+			{
+				return 1;//true
+			}
+			else
+			{
+				return 0;//false
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Integer result)
+		{
+			if(result==1)
+			{
+				profileInstructionsDialog.show();
+			}
+			super.onPostExecute(result);
+		}
+    	
     }
     
     private class GetIncidentsThread extends AsyncTask<Integer, Integer, String[][]>

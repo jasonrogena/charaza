@@ -125,7 +125,6 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback, 
 		ranksInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
 		ranksInstructionsButton=(Button)ranksInstructionsDialog.findViewById(R.id.ranksInstructionsButton);
 		ranksInstructionsButton.setOnTouchListener(this);
-		ranksInstructionsDialog.show();
 		
 		//initialise utils
 		nameShowAnimationTime=220;
@@ -144,6 +143,7 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback, 
         }
 		
 		//fetch network data
+        new GetIsFirstTimeRanksTread().execute(0);
         ranksProgressBar.setVisibility(ProgressBar.VISIBLE);
 		new GetProfilesThread().execute(0);
     }
@@ -399,6 +399,33 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback, 
 			return false;
 		}
 	}*/
+    private class GetIsFirstTimeRanksTread extends AsyncTask<Integer, Integer, Integer>
+    {
+
+		@Override
+		protected Integer doInBackground(Integer... params)
+		{
+			if(charazaData.isFirstTimeRanks())
+			{
+				return 1;//true
+			}
+			else
+			{
+				return 0;//false
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Integer result)
+		{
+			if(result==1)
+			{
+				ranksInstructionsDialog.show();
+			}
+			super.onPostExecute(result);
+		}
+    	
+    }
     
     private class GetProfilesThread extends AsyncTask<Integer, Integer, String[][]>
     {

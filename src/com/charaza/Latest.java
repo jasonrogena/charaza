@@ -131,7 +131,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback,
 		latestInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
 		latestInstructionButton=(Button)latestInstructionsDialog.findViewById(R.id.latestInstructionsButton);
 		latestInstructionButton.setOnTouchListener(this);
-		latestInstructionsDialog.show();
+		//latestInstructionsDialog.show();
 		
 		//initialise utils
 		numberOfProfiles=20;
@@ -151,6 +151,7 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback,
         }
 		
 		//fetch network data
+        new GetIsFirstTimeLatestTread().execute(0);
 		new GetProfilesThread().execute(0);
 		latestProgressBar.setVisibility(ProgressBar.VISIBLE);
     }
@@ -391,6 +392,34 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback,
 			return false;
 		}
 	}*/
+    
+    private class GetIsFirstTimeLatestTread extends AsyncTask<Integer, Integer, Integer>
+    {
+
+		@Override
+		protected Integer doInBackground(Integer... params)
+		{
+			if(charazaData.isFirstTimeLatest())
+			{
+				return 1;//true
+			}
+			else
+			{
+				return 0;//false
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Integer result)
+		{
+			if(result==1)
+			{
+				latestInstructionsDialog.show();
+			}
+			super.onPostExecute(result);
+		}
+    	
+    }
     
     private class GetProfilesThread extends AsyncTask<Integer, Integer, String[][]>
     {
