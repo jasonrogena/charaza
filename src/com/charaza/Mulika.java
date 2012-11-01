@@ -24,6 +24,7 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -32,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -77,6 +79,10 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 	private String selectedPost;
 	private boolean splashScreenFlag;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
+	private Dialog welcomeDialog;
+	private Button welcomeDoneButton;
+	private Dialog mulikaInstructionsDialog;
+	private Button mulikaInstructionsButton;
 	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
@@ -161,7 +167,22 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 		layoutParams.height=WindowManager.LayoutParams.MATCH_PARENT;
 		detailsLabel=(TextView)this.findViewById(R.id.detailsLabel);
 		splashScreen.show();
-        
+		
+		welcomeDialog=new Dialog(this);
+		welcomeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		welcomeDialog.setContentView(R.layout.welcome);
+		WindowManager.LayoutParams welcomeLayoutParams=welcomeDialog.getWindow().getAttributes();
+		welcomeLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+		welcomeDoneButton=(Button)welcomeDialog.findViewById(R.id.welcomeDoneButton);
+		welcomeDoneButton.setOnTouchListener(this);
+		
+		mulikaInstructionsDialog=new Dialog(this);
+		mulikaInstructionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mulikaInstructionsDialog.setContentView(R.layout.mulika_instructions);
+		WindowManager.LayoutParams mulikaInstructionsLayoutParams=mulikaInstructionsDialog.getWindow().getAttributes();
+		mulikaInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+		mulikaInstructionsButton=(Button)mulikaInstructionsDialog.findViewById(R.id.mulikaInstructionsButton);
+		mulikaInstructionsButton.setOnTouchListener(this);
 		
 		//initialise resources
 		splashScreenFlag=false;
@@ -747,6 +768,45 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 				extraInfoButton.setImageBitmap(extraInfoButtonUnclickedImage);
 			}
 		}
+		else if(v==welcomeDoneButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				welcomeDoneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				welcomeDoneButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				welcomeDoneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				welcomeDoneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				welcomeDialog.dismiss();
+				mulikaInstructionsDialog.show();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				welcomeDoneButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				welcomeDoneButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
+		}
+		else if(v==mulikaInstructionsButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				mulikaInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				mulikaInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				mulikaInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				mulikaInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				mulikaInstructionsDialog.dismiss();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				mulikaInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				mulikaInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
+		}
 		return true;
 	}
 	
@@ -851,6 +911,7 @@ public class Mulika extends SherlockActivity implements View.OnClickListener, On
 					splashScreen.dismiss();
 					nameTextBox.requestFocus();
 				}
+				welcomeDialog.show();
 			}
 		});
 		splashScreenSlogan.clearAnimation();

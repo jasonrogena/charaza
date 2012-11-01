@@ -11,6 +11,7 @@ import com.devspark.sidenavigation.SideNavigationView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
@@ -19,6 +20,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -47,7 +50,9 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 	private Button charazaButton;
 	private int incidentShowAnimationTime;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
-    @SuppressWarnings("deprecation")
+    private Dialog profileInstructionsDialog;
+    private Button profileInstructionsButton;
+	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -99,6 +104,15 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
         charazaButton.setOnTouchListener(this);
         profileActivityScrollView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,minHeight+5-charazaButton.getLayoutParams().height));
         profileActivityProgressBar=(ProgressBar)this.findViewById(R.id.profileActivityProgressBar);
+        
+        profileInstructionsDialog=new Dialog(this);
+        profileInstructionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        profileInstructionsDialog.setContentView(R.layout.profile_activity_instructions);
+		WindowManager.LayoutParams profileInstructionsLayoutParams=profileInstructionsDialog.getWindow().getAttributes();
+		profileInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+		profileInstructionsButton=(Button)profileInstructionsDialog.findViewById(R.id.profileInstructionsButton);
+		profileInstructionsButton.setOnTouchListener(this);
+		profileInstructionsDialog.show();
         
         //initialise resources
         incidentShowAnimationTime=180;
@@ -540,6 +554,25 @@ public class ProfileActivity extends SherlockActivity implements View.OnClickLis
 				charazaButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
 				charazaButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
 			}*/
+		}
+		else if(v==profileInstructionsButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				profileInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				profileInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				profileInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				profileInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				profileInstructionsDialog.dismiss();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				profileInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				profileInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
 		}
 		return true;
 	}

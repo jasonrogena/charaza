@@ -49,7 +49,28 @@
     <string name="appVersionDescriptionText">This version is the first to be released to the public and is considered a pre-beta version. Your feedback will be highly appreciated. Please forgive the occasional bug</string>
     <string name="appversionText">Version 1.0</string>
     <string name="appNameDescriptionText">Charaza is a croudsourced community policing application whose aim is to whistleblow injustices committed on the Kenyan mwanainchi</string>
+    <string name="welcomeDescription">This is probably your first time so please take some time to read through the instructions</string>
+    <string name="mulikaIntroduction">In this page you can report on someone who has commited a crime</string>
+    <string name="ranksIntroduction">In this screen, you can view who has been charazwad the most</string>
+    <string name="profileIntroduction">This page shows information about the person you have just selected</string>
+    <string name="profileExplanationText">This page shows the crimes this person has committed. Press on any of the crimes to comment on that particular crime</string>
+    <string name="charazaExplanationText">Press the charaza button at the bottom of the screen to charaza the person</string>
+    <string name="latestIntroduction">This screen contains a list of people who have most recently committed crimes</string>
+    <string name="latestExplanationText">Click any of the names in the list to view the crimes the person has committed</string>
+    <string name="ranksExplanationText">The list in this screen shows the names and the number of times the people in the list have been charazwad. Click on any of the names in the list to view the crimes the person has committed</string>
+    <string name="menuButtonExplanationText">Press the pig in the top-left corner of the screen to navigate to other pages in the application</string>
+    <string name="extraInfoButtonExplanation">If you know something else about the person (apart from the name), press the + button</string>
+    <string name="mulikaButtonExplanationText">When you are done adding information about the crime, press the flashlight</string>
+    <string name="welcomeText">Charaza is a Kenyan whistle-blowing application with a twist. With Charaza, you can either report on somebody\'s criminal activity or charaza the people who have already been reported on</string>
+    <string name="welcomeHeading">Welcome</string>
+    <string name="mulikaInstructionsHeadintText">About Mulika</string>
+    <string name="ranksInstructionsHeading">About Rankings</string>
+    <string name="profileInstructionsHeading">About Profile</string>
     <string name="appNameText">Charaza</string>
     <string name="title_activity_incident">IncidentActivity</string>
+    <string name="menuButtonContentDescription">The menu button</string>
+    <string name="mulikaButtonImageContentDescription">The mulika button</string>
+    <string name="extraInfoButtonContentDescription">The Extra-Info button</string>
+    <string name="latestInstructionsHeading">About Latest</string>
 
 </resources>

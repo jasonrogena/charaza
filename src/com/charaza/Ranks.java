@@ -3,6 +3,7 @@ package com.charaza;
 import com.charaza.resources.CharazaData;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.internal.view.View_HasStateListenerSupport;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.R;
@@ -11,6 +12,7 @@ import com.devspark.sidenavigation.SideNavigationView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -23,10 +25,13 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -34,7 +39,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class Ranks extends SherlockActivity implements ISideNavigationCallback
+public class Ranks extends SherlockActivity implements ISideNavigationCallback, View.OnTouchListener
 {
 	//private static final int SWIPE_MIN_DISTANCE=70;//initially 120
 	//private static final int SWIPE_MAX_OFF_PATH=250;
@@ -52,7 +57,9 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 	private CharazaData charazaData;
 	private int nameShowAnimationTime;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
-    @SuppressWarnings("deprecation")
+    private Dialog ranksInstructionsDialog;
+    private Button ranksInstructionsButton;
+	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -110,6 +117,15 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 		//sideNavigationView.setMinimumHeight(minHeight);
 		ranksProgressBar=(ProgressBar)this.findViewById(R.id.ranksProgressBar);
 		ranksTableLayout=(TableLayout)this.findViewById(R.id.ranksTableLayout);
+		
+		ranksInstructionsDialog=new Dialog(this);
+		ranksInstructionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		ranksInstructionsDialog.setContentView(R.layout.ranks_instructions);
+		WindowManager.LayoutParams ranksInstructionsLayoutParams=ranksInstructionsDialog.getWindow().getAttributes();
+		ranksInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+		ranksInstructionsButton=(Button)ranksInstructionsDialog.findViewById(R.id.ranksInstructionsButton);
+		ranksInstructionsButton.setOnTouchListener(this);
+		ranksInstructionsDialog.show();
 		
 		//initialise utils
 		nameShowAnimationTime=220;
@@ -437,6 +453,31 @@ public class Ranks extends SherlockActivity implements ISideNavigationCallback
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		if(v==ranksInstructionsButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				ranksInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				ranksInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				ranksInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				ranksInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				ranksInstructionsDialog.dismiss();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				ranksInstructionsButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				ranksInstructionsButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
+		}
+		return true;
 	}
     
     /*private class Initializer implements Runnable

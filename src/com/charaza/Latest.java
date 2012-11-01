@@ -15,6 +15,7 @@ import java.text.ParseException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -27,6 +28,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -34,13 +37,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Latest extends SherlockActivity implements ISideNavigationCallback
+public class Latest extends SherlockActivity implements ISideNavigationCallback, View.OnTouchListener
 {
 	//private static final int SWIPE_MIN_DISTANCE=70;//initially 120
 	//private static final int SWIPE_MAX_OFF_PATH=250;
@@ -59,7 +63,9 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 	private int numberOfProfiles;
 	private int nameShowAnimationTime;
 	private int networkCheckStatus=0;//flag showing all other activities that the user has already been notified that there is no connection to internet
-    @SuppressWarnings("deprecation")
+    private Dialog latestInstructionsDialog;
+    private Button latestInstructionButton;
+	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -117,6 +123,15 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 		//sideNavigationView.setMinimumHeight(minHeight);
 		latestProgressBar=(ProgressBar)this.findViewById(R.id.latestProgressBar);
 		latestTableLayout=(TableLayout)this.findViewById(R.id.latestTableLayout);
+		
+		latestInstructionsDialog=new Dialog(this);
+		latestInstructionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		latestInstructionsDialog.setContentView(R.layout.latest_instructions);
+		WindowManager.LayoutParams latestInstructionsLayoutParams=latestInstructionsDialog.getWindow().getAttributes();
+		latestInstructionsLayoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+		latestInstructionButton=(Button)latestInstructionsDialog.findViewById(R.id.latestInstructionsButton);
+		latestInstructionButton.setOnTouchListener(this);
+		latestInstructionsDialog.show();
 		
 		//initialise utils
 		numberOfProfiles=20;
@@ -438,6 +453,31 @@ public class Latest extends SherlockActivity implements ISideNavigationCallback
 			intent.putExtra("networkCheckStatus", networkCheckStatus);
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		if(v==latestInstructionButton)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				latestInstructionButton.setBackgroundColor(getResources().getColor(R.color.normalButtonFocusedBackgroundColor));
+				latestInstructionButton.setTextColor(getResources().getColor(R.color.normalButtonFocusedTextColor));
+			}
+			else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				latestInstructionButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				latestInstructionButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+				latestInstructionsDialog.dismiss();
+			}
+			else if(event.getAction()==MotionEvent.ACTION_CANCEL)
+			{
+				latestInstructionButton.setBackgroundColor(getResources().getColor(R.color.normalButtonBackgroundColor));
+				latestInstructionButton.setTextColor(getResources().getColor(R.color.normalButtonTextColor));
+			}
+		}
+		return true;
 	}
     
     /*private class Initializer implements Runnable
